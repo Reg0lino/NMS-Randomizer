@@ -1,0 +1,9 @@
+{
+  "name": "No Man's Sky: Atlas Terminal",
+  "description": "Mobile-first procedural mission, expedition, and challenge generator for No Man's Sky interlopers powered by the Atlas directive engine.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
+
