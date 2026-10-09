@@ -4,7 +4,6 @@ import {
   Key, 
   Volume2, 
   VolumeX, 
-  Radio, 
   Monitor, 
   Globe, 
   ShieldCheck, 
@@ -13,12 +12,7 @@ import {
   ExternalLink 
 } from 'lucide-react';
 import { getUserApiKey, setUserApiKey } from '../services/directiveApi';
-import { 
-  playTerminalClick, 
-  isDroneActive, 
-  startAtlasDrone, 
-  stopAtlasDrone 
-} from '../utils/audio';
+import { playTerminalClick } from '../utils/audio';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -41,12 +35,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 }) => {
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [keySaved, setKeySaved] = useState(false);
-  const [droneOn, setDroneOn] = useState(isDroneActive());
 
   useEffect(() => {
     if (isOpen) {
       setApiKeyInput(getUserApiKey() || '');
-      setDroneOn(isDroneActive());
     }
   }, [isOpen]);
 
@@ -63,17 +55,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
     playTerminalClick();
     setUserApiKey(null);
     setApiKeyInput('');
-  };
-
-  const handleToggleDrone = () => {
-    playTerminalClick();
-    if (droneOn) {
-      stopAtlasDrone();
-      setDroneOn(false);
-    } else {
-      startAtlasDrone();
-      setDroneOn(true);
-    }
   };
 
   return (
@@ -186,24 +167,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               }`}
             >
               {soundEnabled ? 'ENABLED' : 'MUTED'}
-            </button>
-          </div>
-
-          {/* Atlas 16Hz Harmonic Drone */}
-          <div className="flex items-center justify-between text-xs font-mono">
-            <span className="text-[#7D8B99] flex items-center gap-1.5">
-              <Radio className="w-3.5 h-3.5 text-[#FF2A4D]" />
-              Atlas Ambient Drone (55Hz):
-            </span>
-            <button
-              onClick={handleToggleDrone}
-              className={`px-2.5 py-1 rounded border text-[11px] font-bold ${
-                droneOn
-                  ? 'bg-[#FF2A4D]/20 border-[#FF2A4D] text-[#FF2A4D] shadow-[0_0_8px_rgba(255,42,77,0.4)]'
-                  : 'bg-[#0E141B] border-[#1B2631] text-[#7D8B99]'
-              }`}
-            >
-              {droneOn ? 'DRONING' : 'OFF'}
             </button>
           </div>
 

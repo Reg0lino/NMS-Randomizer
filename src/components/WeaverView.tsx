@@ -53,10 +53,17 @@ export const WeaverView: React.FC<WeaverViewProps> = ({
 
   const randomizeMatrix = () => {
     playTerminalClick();
-    setSelectedVocation(AXIS_VOCATIONS[Math.floor(Math.random() * AXIS_VOCATIONS.length)].id);
-    setSelectedEconomy(AXIS_ECONOMY[Math.floor(Math.random() * AXIS_ECONOMY.length)].id);
-    setSelectedMobility(AXIS_MOBILITY[Math.floor(Math.random() * AXIS_MOBILITY.length)].id);
-    setSelectedBiome(AXIS_BIOMES[Math.floor(Math.random() * AXIS_BIOMES.length)].id);
+    const pickOption = (list: typeof AXIS_VOCATIONS) => {
+      const casualAndVaried = list.filter((item) => item.tier !== 'Challenge');
+      if (Math.random() < 0.88 && casualAndVaried.length > 0) {
+        return casualAndVaried[Math.floor(Math.random() * casualAndVaried.length)].id;
+      }
+      return list[Math.floor(Math.random() * list.length)].id;
+    };
+    setSelectedVocation(pickOption(AXIS_VOCATIONS));
+    setSelectedEconomy(pickOption(AXIS_ECONOMY));
+    setSelectedMobility(pickOption(AXIS_MOBILITY));
+    setSelectedBiome(pickOption(AXIS_BIOMES));
   };
 
   const handleCompile = () => {
@@ -116,6 +123,31 @@ ${currentManifesto.victory_condition}
     setTimeout(() => setCopied(false), 2200);
   };
 
+  const renderTierBadge = (tier?: string) => {
+    if (tier === 'Casual') {
+      return (
+        <span className="text-[9px] px-1 py-0.5 rounded font-mono font-bold bg-[#00F0FF]/15 text-[#00F0FF] border border-[#00F0FF]/30 shrink-0">
+          CASUAL
+        </span>
+      );
+    }
+    if (tier === 'Variation') {
+      return (
+        <span className="text-[9px] px-1 py-0.5 rounded font-mono font-bold bg-[#FFB300]/15 text-[#FFB300] border border-[#FFB300]/30 shrink-0">
+          VARIATION
+        </span>
+      );
+    }
+    if (tier === 'Challenge') {
+      return (
+        <span className="text-[9px] px-1 py-0.5 rounded font-mono font-bold bg-[#FF2A4D]/15 text-[#FF2A4D] border border-[#FF2A4D]/30 shrink-0">
+          CHALLENGE
+        </span>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="flex flex-col gap-4 pb-6">
       {/* Intro Header */}
@@ -126,7 +158,7 @@ ${currentManifesto.victory_condition}
             THE JOURNEY WEAVER // MATRIX COMPILER
           </span>
           <p className="text-[11px] text-[#7D8B99] mt-0.5">
-            Select 4 distinct challenge axes. The engine synthesizes a cohesive lore manifesto and balanced playstyle.
+            Select 1 option per axis to customize your playstyle. Compiles concrete rules, 3-phase objectives, and an endgame victory target.
           </p>
         </div>
 
@@ -145,7 +177,7 @@ ${currentManifesto.victory_condition}
         <div className="flex items-center justify-between text-xs font-mono">
           <span className="text-[#E6EDF3] font-bold tracking-wider uppercase flex items-center gap-1.5">
             <span className="w-2 h-2 bg-[#FF2A4D] rounded-full" />
-            AXIS 1: INTERLOPER VOCATION
+            AXIS 1: VOCATION (YOUR ROLE)
           </span>
           <span className="text-[#FF2A4D] font-bold text-[11px]">
             {AXIS_VOCATIONS.find((v) => v.id === selectedVocation)?.name}
@@ -168,8 +200,11 @@ ${currentManifesto.victory_condition}
                     : 'bg-[#050709] border-[#1B2631] text-[#7D8B99] hover:text-[#E6EDF3] hover:border-[#7D8B99]/40'
                 }`}
               >
-                <span className="font-bold font-mono">{voc.name}</span>
-                <span className="text-[10px] text-[#7D8B99] mt-1 line-clamp-2">{voc.desc}</span>
+                <div className="flex items-center justify-between gap-1 w-full mb-1">
+                  <span className="font-bold font-mono truncate">{voc.name}</span>
+                  {renderTierBadge(voc.tier)}
+                </div>
+                <span className="text-[10px] text-[#7D8B99] line-clamp-2">{voc.desc}</span>
               </button>
             );
           })}
@@ -181,7 +216,7 @@ ${currentManifesto.victory_condition}
         <div className="flex items-center justify-between text-xs font-mono">
           <span className="text-[#E6EDF3] font-bold tracking-wider uppercase flex items-center gap-1.5">
             <span className="w-2 h-2 bg-[#FFB300] rounded-full" />
-            AXIS 2: ECONOMIC & INVENTORY CONSTRAINT
+            AXIS 2: ECONOMY (HOW YOU EARN & CRAFT)
           </span>
           <span className="text-[#FFB300] font-bold text-[11px]">
             {AXIS_ECONOMY.find((e) => e.id === selectedEconomy)?.name}
@@ -204,8 +239,11 @@ ${currentManifesto.victory_condition}
                     : 'bg-[#050709] border-[#1B2631] text-[#7D8B99] hover:text-[#E6EDF3]'
                 }`}
               >
-                <span className="font-bold font-mono">{econ.name}</span>
-                <span className="text-[10px] text-[#7D8B99] mt-0.5">{econ.desc}</span>
+                <div className="flex items-center justify-between gap-1 w-full mb-0.5">
+                  <span className="font-bold font-mono">{econ.name}</span>
+                  {renderTierBadge(econ.tier)}
+                </div>
+                <span className="text-[10px] text-[#7D8B99]">{econ.desc}</span>
               </button>
             );
           })}
@@ -217,7 +255,7 @@ ${currentManifesto.victory_condition}
         <div className="flex items-center justify-between text-xs font-mono">
           <span className="text-[#E6EDF3] font-bold tracking-wider uppercase flex items-center gap-1.5">
             <span className="w-2 h-2 bg-[#00F0FF] rounded-full" />
-            AXIS 3: MOBILITY & NAVIGATION MODIFIER
+            AXIS 3: MOBILITY (HOW YOU EXPLORE & TRAVEL)
           </span>
           <span className="text-[#00F0FF] font-bold text-[11px]">
             {AXIS_MOBILITY.find((m) => m.id === selectedMobility)?.name}
@@ -240,8 +278,11 @@ ${currentManifesto.victory_condition}
                     : 'bg-[#050709] border-[#1B2631] text-[#7D8B99] hover:text-[#E6EDF3]'
                 }`}
               >
-                <span className="font-bold font-mono">{mob.name}</span>
-                <span className="text-[10px] text-[#7D8B99] mt-0.5">{mob.desc}</span>
+                <div className="flex items-center justify-between gap-1 w-full mb-0.5">
+                  <span className="font-bold font-mono">{mob.name}</span>
+                  {renderTierBadge(mob.tier)}
+                </div>
+                <span className="text-[10px] text-[#7D8B99]">{mob.desc}</span>
               </button>
             );
           })}
@@ -253,7 +294,7 @@ ${currentManifesto.victory_condition}
         <div className="flex items-center justify-between text-xs font-mono">
           <span className="text-[#E6EDF3] font-bold tracking-wider uppercase flex items-center gap-1.5">
             <span className="w-2 h-2 bg-emerald-400 rounded-full" />
-            AXIS 4: PLANETARY / SYSTEM BIOME
+            AXIS 4: DESTINATION (TARGET PLANET & ENVIRONMENT)
           </span>
           <span className="text-emerald-400 font-bold text-[11px]">
             {AXIS_BIOMES.find((b) => b.id === selectedBiome)?.name}
@@ -276,8 +317,11 @@ ${currentManifesto.victory_condition}
                     : 'bg-[#050709] border-[#1B2631] text-[#7D8B99] hover:text-[#E6EDF3]'
                 }`}
               >
-                <span className="font-bold font-mono">{bio.name}</span>
-                <span className="text-[10px] text-[#7D8B99] mt-0.5 line-clamp-2">{bio.desc}</span>
+                <div className="flex items-center justify-between gap-1 w-full mb-0.5">
+                  <span className="font-bold font-mono truncate">{bio.name}</span>
+                  {renderTierBadge(bio.tier)}
+                </div>
+                <span className="text-[10px] text-[#7D8B99] line-clamp-2">{bio.desc}</span>
               </button>
             );
           })}
@@ -358,7 +402,7 @@ ${currentManifesto.victory_condition}
           <div className="my-3 bg-[#050709] border border-[#1B2631] p-3 rounded-lg">
             <h4 className="text-xs font-mono font-bold tracking-wider text-[#FFB300] uppercase flex items-center gap-1.5 mb-2">
               <SlidersHorizontal className="w-3.5 h-3.5" />
-              RECOMMENDED GAME CONFIGURATION
+              RECOMMENDED GAME SETTINGS
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono">
               <div className="bg-[#0E141B] p-2 rounded border border-[#1B2631]">
@@ -368,13 +412,13 @@ ${currentManifesto.victory_condition}
                 </span>
               </div>
               <div className="bg-[#0E141B] p-2 rounded border border-[#1B2631]">
-                <span className="text-[#7D8B99] block text-[10px]">PRESET</span>
+                <span className="text-[#7D8B99] block text-[10px]">DIFFICULTY PRESET</span>
                 <span className="font-bold text-[#E6EDF3]">
                   {currentManifesto.recommended_setup.difficulty_preset}
                 </span>
               </div>
               <div className="bg-[#0E141B] p-2 rounded border border-[#1B2631]">
-                <span className="text-[#7D8B99] block text-[10px]">INTERFACE</span>
+                <span className="text-[#7D8B99] block text-[10px]">HUD DISPLAY</span>
                 <span className="font-bold text-[#E6EDF3]">
                   {currentManifesto.recommended_setup.hud_mode}
                 </span>
@@ -386,7 +430,7 @@ ${currentManifesto.victory_condition}
           <div className="my-3">
             <h4 className="text-xs font-mono font-bold tracking-wider text-[#FF2A4D] uppercase flex items-center gap-1.5 mb-1.5">
               <ShieldAlert className="w-3.5 h-3.5" />
-              SYNTHESIZED RESTRICTIONS
+              ACTIVE RULES & RESTRICTIONS
             </h4>
             <div className="flex flex-col gap-1.5">
               {currentManifesto.rules_of_engagement.map((rule, idx) => (
@@ -405,21 +449,25 @@ ${currentManifesto.victory_condition}
           <div className="my-3">
             <h4 className="text-xs font-mono font-bold tracking-wider text-[#00F0FF] uppercase flex items-center gap-1.5 mb-1.5">
               <CheckCircle2 className="w-3.5 h-3.5" />
-              PROGRESSIVE MILESTONES
+              PROGRESSION OBJECTIVES (3 PHASES)
             </h4>
             <div className="flex flex-col gap-2">
               {currentManifesto.milestone_phases.map((phase, idx) => (
                 <div
                   key={idx}
-                  className="bg-[#050709] border border-[#1B2631] p-2.5 rounded-lg text-xs"
+                  className="bg-[#050709] border border-[#1B2631] p-3 rounded-lg text-xs"
                 >
-                  <div className="font-bold font-mono text-[#00F0FF] mb-1">
+                  <div className="font-bold font-mono text-[#00F0FF] mb-1.5 flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#00F0FF]" />
                     {phase.phase}
                   </div>
-                  <p className="text-[#E6EDF3] leading-relaxed mb-1">{phase.objective}</p>
-                  <div className="text-[10px] font-mono text-[#7D8B99] flex items-center gap-1">
-                    <span className="text-[#FFB300]">VALIDATION:</span>
-                    <span>{phase.validation}</span>
+                  <div className="text-[#E6EDF3] leading-relaxed mb-2 font-medium">
+                    <span className="text-[#7D8B99] font-mono text-[11px] block mb-0.5">DIRECT OBJECTIVE:</span>
+                    {phase.objective}
+                  </div>
+                  <div className="text-[11px] font-mono text-[#7D8B99] flex items-center gap-1.5 bg-[#0E141B] p-1.5 rounded border border-[#1B2631]">
+                    <span className="text-[#FFB300] font-bold">VERIFICATION:</span>
+                    <span className="text-[#E6EDF3]/90">{phase.validation}</span>
                   </div>
                 </div>
               ))}
@@ -430,7 +478,7 @@ ${currentManifesto.victory_condition}
           <div className="mt-3 bg-gradient-to-r from-[#00F0FF]/15 via-[#0E141B] to-[#00F0FF]/5 border border-[#00F0FF]/40 rounded-lg p-3">
             <h4 className="text-xs font-mono font-bold text-[#00F0FF] uppercase flex items-center gap-1.5 mb-1">
               <Compass className="w-3.5 h-3.5" />
-              ULTIMATE VICTORY CONDITION
+              FINAL VICTORY TARGET
             </h4>
             <p className="text-xs text-[#E6EDF3] font-semibold leading-relaxed">
               {currentManifesto.victory_condition}

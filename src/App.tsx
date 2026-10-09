@@ -8,17 +8,23 @@ import {
   Directive, 
   WeaverManifesto, 
   Expedition, 
-  IntensityLevel 
+  IntensityLevel,
+  CasualMission,
+  MissionCategory
 } from './types';
 import { 
   OFFLINE_DIRECTIVES, 
   PRESET_EXPEDITIONS 
 } from './data/challengeData';
+import {
+  PRESET_CASUAL_MISSIONS,
+} from './data/casualMissionData';
 import { 
   checkServerStatus, 
   fetchOrGenerateDirective, 
   fetchOrGenerateWeaver, 
-  fetchOrGenerateExpedition 
+  fetchOrGenerateExpedition,
+  fetchOrGenerateCasualMission
 } from './services/directiveApi';
 import { 
   setSoundEnabled, 
@@ -30,14 +36,13 @@ import {
 import { Header } from './components/Header';
 import { ControlBar } from './components/ControlBar';
 import { BottomNav, TabMode } from './components/BottomNav';
-import { TransceiverView } from './components/TransceiverView';
-import { WeaverView } from './components/WeaverView';
+import { CasualMissionsView } from './components/CasualMissionsView';
 import { ExpeditionView } from './components/ExpeditionView';
 import { ArchiveView } from './components/ArchiveView';
 import { SettingsModal } from './components/SettingsModal';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<TabMode>('transceiver');
+  const [activeTab, setActiveTab] = useState<TabMode>('missions');
   const [isSettingsOpen, setIsSettingsOpen] = useState<boolean>(false);
   const [isStaticDeploy, setIsStaticDeploy] = useState<boolean>(false);
 
@@ -64,7 +69,24 @@ export default function App() {
   const [useAi, setUseAi] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Active items
+  // Casual Mission state (Simplified adventure board)
+  const [currentCasualMission, setCurrentCasualMission] = useState<CasualMission | null>(() => {
+    try {
+      const saved = localStorage.getItem('atlas_current_casual_mission');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return PRESET_CASUAL_MISSIONS[0];
+  });
+
+  const [savedCasualMissions, setSavedCasualMissions] = useState<CasualMission[]>(() => {
+    try {
+      const saved = localStorage.getItem('atlas_saved_casual_missions');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return [];
+  });
+
+  // Expeditions & Legacy Directive states
   const [currentDirective, setCurrentDirective] = useState<Directive | null>(() => {
     try {
       const saved = localStorage.getItem('atlas_current_directive');
@@ -124,40 +146,47 @@ export default function App() {
       }
     });
 
-    // Check URL hash for shared directive or tab
+    // Check URL hash for shared tab
     try {
       const hash = window.location.hash;
       if (hash.startsWith('#tab=')) {
         const tab = hash.replace('#tab=', '') as TabMode;
-        if (['transceiver', 'weaver', 'expedition', 'archive'].includes(tab)) {
+        if (['missions', 'expedition', 'archive'].includes(tab)) {
           setActiveTab(tab);
         }
       }
     } catch {}
   }, []);
 
-  // Save current directive
+  // Save state to localStorage
+  useEffect(() => {
+    if (currentCasualMission) {
+      localStorage.setItem('atlas_current_casual_mission', JSON.stringify(currentCasualMission));
+    }
+  }, [currentCasualMission]);
+
+  useEffect(() => {
+    localStorage.setItem('atlas_saved_casual_missions', JSON.stringify(savedCasualMissions));
+  }, [savedCasualMissions]);
+
   useEffect(() => {
     if (currentDirective) {
       localStorage.setItem('atlas_current_directive', JSON.stringify(currentDirective));
     }
   }, [currentDirective]);
 
-  // Save current manifesto
   useEffect(() => {
     if (currentManifesto) {
       localStorage.setItem('atlas_current_manifesto', JSON.stringify(currentManifesto));
     }
   }, [currentManifesto]);
 
-  // Save current expedition
   useEffect(() => {
     if (currentExpedition) {
       localStorage.setItem('atlas_current_expedition', JSON.stringify(currentExpedition));
     }
   }, [currentExpedition]);
 
-  // Save collections
   useEffect(() => {
     localStorage.setItem('atlas_saved_directives', JSON.stringify(savedDirectives));
   }, [savedDirectives]);
@@ -192,128 +221,122 @@ export default function App() {
     setUseAi(!useAi);
   };
 
-  // Generate Directive (Transceiver)
-  const handleGenerateDirective = async (intensity: IntensityLevel, customNotes?: string) => {
-    setIsLoading(true);
-    try {
-      const { directive } = await fetchOrGenerateDirective(intensity, !useAi, customNotes);
-      setCurrentDirective(directive);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Compile Weaver Manifesto
-  const handleCompileWeaver = async (
-    vocationId: string,
-    economyId: string,
-    mobilityId: string,
-    biomeId: string,
-    vocationName: string,
-    economyName: string,
-    mobilityName: string,
-    biomeName: string
+  // Generate Casual Mission
+  const handleGenerateCasualMission = async (
+    categoryOrCategories?: MissionCategory[] | MissionCategory,
+    targetBiome?: string,
+    customNotes?: string
   ) => {
     setIsLoading(true);
     try {
-      const { manifesto } = await fetchOrGenerateWeaver(
-        vocationId,
-        economyId,
-        mobilityId,
-        biomeId,
-        vocationName,
-        economyName,
-        mobilityName,
-        biomeName,
-        !useAi
-      );
-      setCurrentManifesto(manifesto);
+      const { mission } = await fetchOrGenerateCasualMission(categoryOrCategories, targetBiome, customNotes, !useAi);
+      setCurrentCasualMission(mission);
+    } catch (e) {
+      console.error(e);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Generate Expedition Campaign
+  const handleSaveCasualMission = (mission: CasualMission) => {
+    const exists = savedCasualMissions.some((m) => m.id === mission.id);
+    if (exists) {
+      setSavedCasualMissions(savedCasualMissions.filter((m) => m.id !== mission.id));
+    } else {
+      setSavedCasualMissions([mission, ...savedCasualMissions]);
+    }
+  };
+
+  const handleStartMission = (mission: CasualMission) => {
+    // Automatically log into previous mission log, making it completely offline and reloadable
+    setSavedCasualMissions((prev) => {
+      const existsIndex = prev.findIndex((m) => m.id === mission.id || m.protocol_id === mission.protocol_id);
+      if (existsIndex >= 0) {
+        const updated = [...prev];
+        updated.splice(existsIndex, 1);
+        return [mission, ...updated];
+      }
+      return [mission, ...prev];
+    });
+  };
+
+  const handleSelectCasualMission = (mission: CasualMission) => {
+    setCurrentCasualMission(mission);
+    setActiveTab('missions');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Generate Expedition
   const handleGenerateExpedition = async (theme: string) => {
     setIsLoading(true);
     try {
       const { expedition } = await fetchOrGenerateExpedition(theme, !useAi);
       setCurrentExpedition(expedition);
+    } catch (e) {
+      console.error(e);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Toggle milestone in active expedition
-  const handleToggleMilestone = (phaseIndex: number, milestoneId: string) => {
+  const handleToggleMilestone = (phaseNumber: number, milestoneId: string) => {
     if (!currentExpedition) return;
-    playTerminalClick();
+    let becameCompleted = false;
 
-    const updatedPhases = currentExpedition.phases.map((phase, pIdx) => {
-      if (pIdx !== phaseIndex) return phase;
+    const nextPhases = currentExpedition.phases.map((phase) => {
+      if (phase.phase_number !== phaseNumber) return phase;
       return {
         ...phase,
         milestones: phase.milestones.map((m) => {
-          if (m.id !== milestoneId) return m;
-          const nextCompleted = !m.completed;
-          if (nextCompleted) {
-            playMilestoneComplete();
+          if (m.id === milestoneId) {
+            const next = !m.completed;
+            if (next) becameCompleted = true;
+            return { ...m, completed: next };
           }
-          return { ...m, completed: nextCompleted };
+          return m;
         }),
       };
     });
 
+    if (becameCompleted) {
+      playMilestoneComplete();
+    } else {
+      playTerminalClick();
+    }
+
     setCurrentExpedition({
       ...currentExpedition,
-      phases: updatedPhases,
+      phases: nextPhases,
     });
   };
 
-  // Reset milestone progress for current expedition
   const handleResetExpeditionProgress = () => {
     if (!currentExpedition) return;
-    const resetPhases = currentExpedition.phases.map((p) => ({
-      ...p,
-      milestones: p.milestones.map((m) => ({ ...m, completed: false })),
+    const nextPhases = currentExpedition.phases.map((phase) => ({
+      ...phase,
+      milestones: phase.milestones.map((m) => ({ ...m, completed: false })),
     }));
     setCurrentExpedition({
       ...currentExpedition,
-      phases: resetPhases,
+      phases: nextPhases,
     });
   };
 
-  // Save / Bookmark operations
-  const handleSaveDirective = (directive: Directive) => {
-    if (savedDirectives.some((d) => d.protocol_id === directive.protocol_id)) {
-      setSavedDirectives(savedDirectives.filter((d) => d.protocol_id !== directive.protocol_id));
+  const handleSaveExpedition = (exp: Expedition) => {
+    const exists = savedExpeditions.some((e) => e.id === exp.id);
+    if (exists) {
+      setSavedExpeditions(savedExpeditions.filter((e) => e.id !== exp.id));
     } else {
-      setSavedDirectives([directive, ...savedDirectives]);
+      setSavedExpeditions([exp, ...savedExpeditions]);
     }
   };
 
-  const handleSaveManifesto = (manifesto: WeaverManifesto) => {
-    if (savedManifestos.some((m) => m.protocol_id === manifesto.protocol_id)) {
-      setSavedManifestos(savedManifestos.filter((m) => m.protocol_id !== manifesto.protocol_id));
-    } else {
-      setSavedManifestos([manifesto, ...savedManifestos]);
-    }
-  };
-
-  const handleSaveExpedition = (expedition: Expedition) => {
-    if (savedExpeditions.some((e) => e.id === expedition.id)) {
-      setSavedExpeditions(savedExpeditions.filter((e) => e.id !== expedition.id));
-    } else {
-      setSavedExpeditions([expedition, ...savedExpeditions]);
-    }
-  };
-
-  // Archive export / import
   const handleExportJson = () => {
     const data = {
       app: "No Man's Sky: Atlas Terminal",
-      version: '5.0',
+      version: '6.0',
       exportedAt: new Date().toISOString(),
+      casualMissions: savedCasualMissions,
       directives: savedDirectives,
       manifestos: savedManifestos,
       expeditions: savedExpeditions,
@@ -330,6 +353,9 @@ export default function App() {
   const handleImportJson = (jsonString: string): boolean => {
     try {
       const parsed = JSON.parse(jsonString);
+      if (Array.isArray(parsed.casualMissions)) {
+        setSavedCasualMissions((prev) => [...parsed.casualMissions, ...prev]);
+      }
       if (Array.isArray(parsed.directives)) {
         setSavedDirectives((prev) => [...parsed.directives, ...prev]);
       }
@@ -346,12 +372,13 @@ export default function App() {
   };
 
   const handleClearAllArchive = () => {
+    setSavedCasualMissions([]);
     setSavedDirectives([]);
     setSavedManifestos([]);
     setSavedExpeditions([]);
   };
 
-  const totalSavedCount = savedDirectives.length + savedManifestos.length + savedExpeditions.length;
+  const totalSavedCount = savedCasualMissions.length + savedDirectives.length + savedManifestos.length + savedExpeditions.length;
 
   return (
     <div className="w-full min-h-screen min-h-[100dvh] bg-[#000000] text-[#E6EDF3] flex flex-col items-center relative">
@@ -362,7 +389,7 @@ export default function App() {
       <div
         className={`w-full flex flex-col bg-[#050709] transition-all duration-300 relative ${
           s10Frame
-            ? 'max-w-[390px] h-[820px] max-h-[92vh] my-auto rounded-[36px] border-[8px] border-[#1B2631] shadow-[0_0_50px_rgba(255,42,77,0.3)] overflow-hidden'
+            ? 'max-w-[390px] h-[820px] max-h-[92vh] my-auto rounded-[36px] border-[8px] border-[#1B2631] shadow-[0_0_50px_rgba(0,240,255,0.25)] overflow-hidden'
             : 'max-w-2xl min-h-screen min-h-[100dvh] border-x border-[#1B2631]/60 shadow-2xl'
         }`}
       >
@@ -389,31 +416,20 @@ export default function App() {
           />
 
           {/* Active Operational View */}
-          {activeTab === 'transceiver' && (
-            <TransceiverView
-              currentDirective={currentDirective}
-              onGenerate={handleGenerateDirective}
+          {activeTab === 'missions' && (
+            <CasualMissionsView
+              currentMission={currentCasualMission}
+              onGenerate={handleGenerateCasualMission}
               isLoading={isLoading}
-              onSaveDirective={handleSaveDirective}
+              onSaveMission={handleSaveCasualMission}
               isSaved={
-                currentDirective
-                  ? savedDirectives.some((d) => d.protocol_id === currentDirective.protocol_id)
+                currentCasualMission
+                  ? savedCasualMissions.some((m) => m.id === currentCasualMission.id)
                   : false
               }
-            />
-          )}
-
-          {activeTab === 'weaver' && (
-            <WeaverView
-              currentManifesto={currentManifesto}
-              onCompile={handleCompileWeaver}
-              isLoading={isLoading}
-              onSaveManifesto={handleSaveManifesto}
-              isSaved={
-                currentManifesto
-                  ? savedManifestos.some((m) => m.protocol_id === currentManifesto.protocol_id)
-                  : false
-              }
+              onStartMission={handleStartMission}
+              savedCasualMissions={savedCasualMissions}
+              onSelectCasualMission={handleSelectCasualMission}
             />
           )}
 
@@ -435,23 +451,32 @@ export default function App() {
 
           {activeTab === 'archive' && (
             <ArchiveView
+              savedCasualMissions={savedCasualMissions}
               savedDirectives={savedDirectives}
               savedManifestos={savedManifestos}
               savedExpeditions={savedExpeditions}
+              onSelectCasualMission={(m) => {
+                setCurrentCasualMission(m);
+                setActiveTab('missions');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
               onSelectDirective={(d) => {
                 setCurrentDirective(d);
-                setActiveTab('transceiver');
+                setActiveTab('missions');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
               onSelectManifesto={(m) => {
                 setCurrentManifesto(m);
-                setActiveTab('weaver');
+                setActiveTab('missions');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
               onSelectExpedition={(e) => {
                 setCurrentExpedition(e);
                 setActiveTab('expedition');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onDeleteCasualMission={(id) => {
+                setSavedCasualMissions(savedCasualMissions.filter((m) => m.id !== id));
               }}
               onDeleteDirective={(id) => {
                 setSavedDirectives(savedDirectives.filter((d) => d.protocol_id !== id));

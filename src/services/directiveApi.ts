@@ -1,10 +1,15 @@
-import { Directive, Expedition, WeaverManifesto, IntensityLevel } from '../types';
+import { Directive, Expedition, WeaverManifesto, IntensityLevel, CasualMission, MissionCategory } from '../types';
 import { 
   OFFLINE_DIRECTIVES, 
   generateProceduralDirective, 
   generateProceduralManifesto, 
   PRESET_EXPEDITIONS 
 } from '../data/challengeData';
+import {
+  generateCasualMission,
+  PRESET_CASUAL_MISSIONS,
+  MISSION_CATEGORIES
+} from '../data/casualMissionData';
 
 export function getUserApiKey(): string | null {
   try {
@@ -110,8 +115,11 @@ ${customNotes ? `User telemetry request: ${customNotes}` : ''}
 
 PERSONA & RULES:
 - Speak as an omniscient, ancient, slightly weary Atlas/Nada telemetry interface speaking directly to an organic Traveler.
-- In ~10% of outputs, incorporate a subtle, dry machine observation, deadpan sarcasm, or a witty cosmic pun about mortal Traveler habits (e.g. shooting lasers at carbon rocks to cure existential dread, or feeding hostile bio-horrors). 90% of the time remain solemn, poetic, and ominous. Never break character.
+- In ~10% of outputs, incorporate a subtle, dry machine observation, deadpan sarcasm, or a witty cosmic pun about mortal Traveler habits. 90% of the time remain solemn, poetic, and ominous. Never break character.
 - Mechanics must reflect real No Man's Sky systems (Omega, Orbital, Echoes, Aquarius, Worlds).
+- Focus predominantly on fun, casual activities and creative playstyle variations. Pull back on harsh survival grinds or difficulty spikes unless "Atlas Protocol" is selected.
+- DIRECT & ACTIONABLE OBJECTIVES: Every item in 'primary_directives' MUST begin with an imperative action verb (e.g. "Catch 8 fish species", "Excavate 4 Ancient Skeletons", "Build a glass pavilion with 4 solar panels", "Synthesize 500 Chromatic Metal via Refiner"). Avoid vague filler.
+- CLEAR DESCRIPTORS: 'rules_of_engagement' must state explicit operational rules/restrictions. 'victory_condition' must be a concrete, measurable completion target.
 
 Output pure JSON with schema:
 {
@@ -121,9 +129,9 @@ Output pure JSON with schema:
   "intensity": "${intensity}",
   "flavor_quote": "poetic or dryly witty cosmic quote",
   "core_vocation": "vocation name",
-  "rules_of_engagement": ["3 to 4 strict challenge rules"],
-  "primary_directives": ["3 to 4 actionable mission objectives"],
-  "victory_condition": "clear endgame milestone",
+  "rules_of_engagement": ["3 to 4 clear playstyle rules"],
+  "primary_directives": ["3 to 4 direct, actionable mission tasks"],
+  "victory_condition": "concrete, measurable completion target",
   "biome_target": "optional biome name"
 }`;
 
@@ -199,9 +207,11 @@ Economic Rule: ${economyName}
 Mobility Restriction: ${mobilityName}
 Target Biome: ${biomeName}
 
-PERSONA:
-- Solemn, ancient, algorithmic, speaking directly to an organic Interloper.
-- Include a subtle hint of dry machine sarcasm or an in-universe pun approximately 10% of the time (e.g. noting the absurdity of planetary bureaucracy or dying to biological horrors), remaining cosmic and atmospheric 90% of the time.
+PERSONA & RULES:
+- Solemn, ancient, algorithmic, speaking directly to an organic Interloper with subtle dry machine sarcasm ~10% of the time.
+- DIRECT OBJECTIVES: In 'milestone_phases', make every phase 'objective' an explicit, actionable task in No Man's Sky. Start with an action verb (e.g. "Land on a Dissonant World and construct a base computer with a save beacon").
+- CLEAR RULES: 'rules_of_engagement' must clearly state operational boundaries.
+- 'victory_condition': Unambiguous, measurable completion milestone.
 
 Output pure JSON matching schema:
 {
@@ -213,13 +223,13 @@ Output pure JSON matching schema:
   "biome": "${biomeName}",
   "lore_manifesto": "deep cosmological lore explanation with occasional subtle dry wit",
   "recommended_setup": { "game_mode": "string", "difficulty_preset": "string", "hud_mode": "string" },
-  "rules_of_engagement": ["3-4 rules"],
+  "rules_of_engagement": ["3-4 clear operational rules"],
   "milestone_phases": [
-    { "phase": "Phase 1: ...", "objective": "string", "validation": "string" },
-    { "phase": "Phase 2: ...", "objective": "string", "validation": "string" },
-    { "phase": "Phase 3: ...", "objective": "string", "validation": "string" }
+    { "phase": "Phase 1: ...", "objective": "direct actionable task", "validation": "verification check" },
+    { "phase": "Phase 2: ...", "objective": "direct actionable task", "validation": "verification check" },
+    { "phase": "Phase 3: ...", "objective": "direct actionable task", "validation": "verification check" }
   ],
-  "victory_condition": "string"
+  "victory_condition": "concrete, measurable victory target"
 }`;
 
     const raw = await callDirectClientGemini(prompt, userKey);
@@ -330,3 +340,158 @@ Output pure JSON matching schema:
   clone.createdAt = Date.now();
   return { expedition: clone, source: 'procedural' };
 }
+
+export async function fetchOrGenerateCasualMission(
+  categoriesInput?: MissionCategory[] | MissionCategory,
+  targetBiome?: string,
+  customNotes?: string,
+  forceProcedural: boolean = false
+): Promise<{ mission: CasualMission; source: 'gemini' | 'procedural' }> {
+  const categoriesList: MissionCategory[] = Array.isArray(categoriesInput)
+    ? categoriesInput
+    : (categoriesInput ? [categoriesInput] : ['culinary_restaurant']);
+  const primaryCategory = categoriesList[0];
+
+  if (forceProcedural) {
+    return {
+      mission: generateCasualMission(primaryCategory, targetBiome, categoriesList),
+      source: 'procedural',
+    };
+  }
+
+  // 1. Try server backend with fast 5.5s timeout guard
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5500);
+
+    const res = await fetch('/api/generate-casual-mission', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
+      body: JSON.stringify({
+        category: primaryCategory,
+        categories: categoriesList,
+        targetBiome,
+        customNotes,
+      }),
+    });
+    clearTimeout(timeoutId);
+
+    if (res.ok) {
+      const data = await res.json();
+      return { mission: data, source: 'gemini' };
+    }
+  } catch {}
+
+  // 2. Client direct key fallback
+  const userKey = getUserApiKey();
+  if (userKey) {
+    const isCombined = categoriesList.length > 1;
+    const catMeta = MISSION_CATEGORIES.find((c) => c.id === primaryCategory);
+    const prompt = `Generate a single fun, casual No Man's Sky mission that ${
+      isCombined
+        ? `synthesizes ${categoriesList.length} distinct styles (${categoriesList.join(', ')})`
+        : `explores ${catMeta?.name}`
+    }.
+${targetBiome ? `Target Biome: ${targetBiome}` : ''}
+${customNotes ? `User Note: ${customNotes}` : ''}
+
+Output JSON with schema:
+{
+  "protocol_id": "string",
+  "title": "string",
+  "category": "${primaryCategory}",
+  "categories": ${JSON.stringify(categoriesList)},
+  "categoryName": "${isCombined ? `Hybrid (${categoriesList.length} Styles)` : (catMeta?.name || 'Casual Mission')}",
+  "categoryIcon": "${catMeta?.icon || 'Compass'}",
+  "flavor_quote": "string",
+  "targetLocation": "string",
+  "lore": {
+    "origin": "string",
+    "headline": "string",
+    "narrative": "string",
+    "historicalContext": "string",
+    "canonEntity": "string"
+  },
+  "paths": [
+    {
+      "path_id": "alpha",
+      "themeTitle": "string",
+      "approach": "string",
+      "description": "string",
+      "tacticalAdvantage": "string",
+      "steps": [
+        { "step_number": 1, "title": "string", "description": "string" },
+        { "step_number": 2, "title": "string", "description": "string" },
+        { "step_number": 3, "title": "string", "description": "string" },
+        { "step_number": 4, "title": "string", "description": "string" }
+      ]
+    },
+    {
+      "path_id": "beta",
+      "themeTitle": "string",
+      "approach": "string",
+      "description": "string",
+      "tacticalAdvantage": "string",
+      "steps": [
+        { "step_number": 1, "title": "string", "description": "string" },
+        { "step_number": 2, "title": "string", "description": "string" },
+        { "step_number": 3, "title": "string", "description": "string" },
+        { "step_number": 4, "title": "string", "description": "string" }
+      ]
+    },
+    {
+      "path_id": "gamma",
+      "themeTitle": "string",
+      "approach": "string",
+      "description": "string",
+      "tacticalAdvantage": "string",
+      "steps": [
+        { "step_number": 1, "title": "string", "description": "string" },
+        { "step_number": 2, "title": "string", "description": "string" },
+        { "step_number": 3, "title": "string", "description": "string" },
+        { "step_number": 4, "title": "string", "description": "string" }
+      ]
+    }
+  ],
+  "restaurantSpec": {
+    "venueType": "string",
+    "aestheticTheme": "string",
+    "signatureDishes": [
+      { "name": "string", "ingredients": ["string"], "processorSteps": "string" }
+    ],
+    "fishingCatch": "optional string",
+    "decorChecklist": ["string"]
+  },
+  "steps": [
+    { "step_number": 1, "title": "string", "description": "string" },
+    { "step_number": 2, "title": "string", "description": "string" },
+    { "step_number": 3, "title": "string", "description": "string" },
+    { "step_number": 4, "title": "string", "description": "string" }
+  ],
+  "bonusGoal": "optional string"
+}`;
+
+    const raw = await callDirectClientGemini(prompt, userKey);
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        parsed.id = `mis_${Date.now()}`;
+        parsed.createdAt = Date.now();
+        if (Array.isArray(parsed.steps)) {
+          parsed.steps.forEach((s: { completed?: boolean }) => {
+            s.completed = false;
+          });
+        }
+        return { mission: parsed, source: 'gemini' };
+      } catch {}
+    }
+  }
+
+  // 3. Fallback to procedural generator
+  return {
+    mission: generateCasualMission(primaryCategory, targetBiome, categoriesList),
+    source: 'procedural',
+  };
+}
+

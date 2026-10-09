@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Directive, WeaverManifesto, Expedition } from '../types';
+import { Directive, WeaverManifesto, Expedition, CasualMission } from '../types';
 import { OFFLINE_DIRECTIVES } from '../data/challengeData';
 import { 
   BookOpen, 
@@ -13,40 +13,49 @@ import {
   GitFork, 
   Compass, 
   Check, 
-  Share2 
+  Share2,
+  Rocket,
+  MapPin,
+  UtensilsCrossed
 } from 'lucide-react';
 import { playTerminalClick } from '../utils/audio';
 
 interface ArchiveViewProps {
-  savedDirectives: Directive[];
-  savedManifestos: WeaverManifesto[];
-  savedExpeditions: Expedition[];
-  onSelectDirective: (directive: Directive) => void;
-  onSelectManifesto: (manifesto: WeaverManifesto) => void;
-  onSelectExpedition: (expedition: Expedition) => void;
-  onDeleteDirective: (protocolId: string) => void;
-  onDeleteManifesto: (protocolId: string) => void;
-  onDeleteExpedition: (id: string) => void;
+  savedDirectives?: Directive[];
+  savedManifestos?: WeaverManifesto[];
+  savedExpeditions?: Expedition[];
+  savedCasualMissions?: CasualMission[];
+  onSelectDirective?: (directive: Directive) => void;
+  onSelectManifesto?: (manifesto: WeaverManifesto) => void;
+  onSelectExpedition?: (expedition: Expedition) => void;
+  onSelectCasualMission?: (mission: CasualMission) => void;
+  onDeleteDirective?: (protocolId: string) => void;
+  onDeleteManifesto?: (protocolId: string) => void;
+  onDeleteExpedition?: (id: string) => void;
+  onDeleteCasualMission?: (id: string) => void;
   onExportJson: () => void;
   onImportJson: (jsonData: string) => boolean;
   onClearAll: () => void;
 }
 
 export const ArchiveView: React.FC<ArchiveViewProps> = ({
-  savedDirectives,
-  savedManifestos,
-  savedExpeditions,
-  onSelectDirective,
-  onSelectManifesto,
-  onSelectExpedition,
-  onDeleteDirective,
-  onDeleteManifesto,
-  onDeleteExpedition,
+  savedDirectives = [],
+  savedManifestos = [],
+  savedExpeditions = [],
+  savedCasualMissions = [],
+  onSelectDirective = () => {},
+  onSelectManifesto = () => {},
+  onSelectExpedition = () => {},
+  onSelectCasualMission = () => {},
+  onDeleteDirective = () => {},
+  onDeleteManifesto = () => {},
+  onDeleteExpedition = () => {},
+  onDeleteCasualMission = () => {},
   onExportJson,
   onImportJson,
   onClearAll,
 }) => {
-  const [filter, setFilter] = useState<'all' | 'directives' | 'manifestos' | 'expeditions' | 'offline_presets'>('all');
+  const [filter, setFilter] = useState<'all' | 'missions' | 'expeditions' | 'directives' | 'manifestos' | 'offline_presets'>('all');
   const [importModalOpen, setImportModalOpen] = useState(false);
   const [importText, setImportText] = useState('');
   const [importStatus, setImportStatus] = useState<string | null>(null);
@@ -67,7 +76,7 @@ export const ArchiveView: React.FC<ArchiveViewProps> = ({
     }
   };
 
-  const totalSaved = savedDirectives.length + savedManifestos.length + savedExpeditions.length;
+  const totalSaved = savedCasualMissions.length + savedDirectives.length + savedManifestos.length + savedExpeditions.length;
 
   return (
     <div className="flex flex-col gap-4 pb-6">
@@ -136,11 +145,41 @@ export const ArchiveView: React.FC<ArchiveViewProps> = ({
           }}
           className={`px-2.5 py-1.5 rounded border whitespace-nowrap ${
             filter === 'all'
-              ? 'bg-[#FF2A4D]/15 border-[#FF2A4D] text-[#E6EDF3] font-bold'
+              ? 'bg-[#00F0FF]/15 border-[#00F0FF] text-[#E6EDF3] font-bold'
               : 'bg-[#050709] border-[#1B2631] text-[#7D8B99] hover:text-[#E6EDF3]'
           }`}
         >
           ALL ({totalSaved})
+        </button>
+
+        <button
+          onClick={() => {
+            playTerminalClick();
+            setFilter('missions');
+          }}
+          className={`px-2.5 py-1.5 rounded border whitespace-nowrap flex items-center gap-1 ${
+            filter === 'missions'
+              ? 'bg-[#00F0FF]/15 border-[#00F0FF] text-[#E6EDF3] font-bold'
+              : 'bg-[#050709] border-[#1B2631] text-[#7D8B99] hover:text-[#E6EDF3]'
+          }`}
+        >
+          <Rocket className="w-3 h-3 text-[#00F0FF]" />
+          <span>PREVIOUS MISSIONS ({savedCasualMissions.length})</span>
+        </button>
+
+        <button
+          onClick={() => {
+            playTerminalClick();
+            setFilter('expeditions');
+          }}
+          className={`px-2.5 py-1.5 rounded border whitespace-nowrap flex items-center gap-1 ${
+            filter === 'expeditions'
+              ? 'bg-[#FFB300]/15 border-[#FFB300] text-[#E6EDF3] font-bold'
+              : 'bg-[#050709] border-[#1B2631] text-[#7D8B99] hover:text-[#E6EDF3]'
+          }`}
+        >
+          <Compass className="w-3 h-3 text-[#FFB300]" />
+          <span>EXPEDITIONS ({savedExpeditions.length})</span>
         </button>
 
         <button
@@ -176,21 +215,6 @@ export const ArchiveView: React.FC<ArchiveViewProps> = ({
         <button
           onClick={() => {
             playTerminalClick();
-            setFilter('expeditions');
-          }}
-          className={`px-2.5 py-1.5 rounded border whitespace-nowrap flex items-center gap-1 ${
-            filter === 'expeditions'
-              ? 'bg-[#FFB300]/15 border-[#FFB300] text-[#E6EDF3] font-bold'
-              : 'bg-[#050709] border-[#1B2631] text-[#7D8B99] hover:text-[#E6EDF3]'
-          }`}
-        >
-          <Compass className="w-3 h-3 text-[#FFB300]" />
-          <span>EXPEDITIONS ({savedExpeditions.length})</span>
-        </button>
-
-        <button
-          onClick={() => {
-            playTerminalClick();
             setFilter('offline_presets');
           }}
           className={`px-2.5 py-1.5 rounded border whitespace-nowrap flex items-center gap-1 ${
@@ -206,6 +230,71 @@ export const ArchiveView: React.FC<ArchiveViewProps> = ({
 
       {/* Lists of items */}
       <div className="flex flex-col gap-2">
+        {/* Saved Casual Missions */}
+        {(filter === 'all' || filter === 'missions') &&
+          savedCasualMissions.map((m) => (
+            <div
+              key={m.id}
+              className="bg-[#0E141B] border border-[#00F0FF]/40 p-3 rounded-lg flex items-center justify-between gap-3 transition-colors"
+            >
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  {m.category === 'culinary_restaurant' ? (
+                    <UtensilsCrossed className="w-3.5 h-3.5 text-[#FF7A00]" />
+                  ) : (
+                    <Rocket className="w-3.5 h-3.5 text-[#00F0FF]" />
+                  )}
+                  <span className="font-mono text-xs font-bold text-[#00F0FF]">
+                    {m.protocol_id}
+                  </span>
+                  <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded border bg-[#050709] border-[#1B2631] ${
+                    m.category === 'culinary_restaurant' ? 'text-[#FF7A00]' : 'text-[#00F0FF]'
+                  }`}>
+                    {m.categoryName}
+                  </span>
+                  {m.categories && m.categories.length > 1 && (
+                    <span className="text-[9px] font-mono px-1 rounded bg-[#FFB300]/20 text-[#FFB300] font-bold">
+                      ⚡ FUSION
+                    </span>
+                  )}
+                </div>
+                <h4 className="text-sm font-bold text-[#E6EDF3] mt-0.5">{m.title}</h4>
+                <p className="text-xs text-[#7D8B99] line-clamp-1 mt-0.5 flex items-center gap-1">
+                  <MapPin className="w-3 h-3 text-[#00E5A3]" />
+                  <span>{m.targetLocation}</span>
+                  {m.paths && m.paths.length > 0 ? (
+                    <span>• 3 Thematic Paths</span>
+                  ) : (
+                    <span>• {m.steps.length} Steps</span>
+                  )}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={() => {
+                    playTerminalClick();
+                    onSelectCasualMission(m);
+                  }}
+                  className="p-1.5 px-3 rounded-lg border bg-[#00F0FF]/15 border-[#00F0FF]/60 text-[#00F0FF] hover:bg-[#00F0FF]/25 transition-all text-xs font-mono font-bold active:scale-95 flex items-center gap-1"
+                  title="Reload this mission into active view"
+                >
+                  <Rocket className="w-3 h-3 text-[#00F0FF]" />
+                  <span>RELOAD</span>
+                </button>
+                <button
+                  onClick={() => {
+                    playTerminalClick();
+                    onDeleteCasualMission(m.id);
+                  }}
+                  className="p-1.5 rounded border bg-[#050709] border-[#1B2631] text-[#7D8B99] hover:text-red-400 transition-colors"
+                  title="Delete"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          ))}
         {/* Offline Presets View */}
         {filter === 'offline_presets' && (
           <div className="flex flex-col gap-2">
@@ -266,7 +355,7 @@ export const ArchiveView: React.FC<ArchiveViewProps> = ({
                 </div>
                 <h4 className="text-sm font-bold text-[#E6EDF3] mt-0.5">{d.codename}</h4>
                 <p className="text-xs text-[#7D8B99] line-clamp-1 mt-0.5">
-                  Vocation: {d.core_vocation} • {d.classification}
+                  Role: {d.core_vocation} • Environment: {d.biome_target || 'Universal'}
                 </p>
               </div>
 
@@ -311,7 +400,7 @@ export const ArchiveView: React.FC<ArchiveViewProps> = ({
                 </div>
                 <h4 className="text-sm font-bold text-[#E6EDF3] mt-0.5">{m.codename}</h4>
                 <p className="text-xs text-[#7D8B99] line-clamp-1 mt-0.5">
-                  {m.vocation} • {m.economy} • {m.mobility}
+                  Role: {m.vocation} • Economy: {m.economy} • Target: {m.biome}
                 </p>
               </div>
 

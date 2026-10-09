@@ -8,7 +8,6 @@ import {
   CheckCircle2, 
   Circle, 
   Trophy, 
-  Gift, 
   RotateCcw, 
   Bookmark, 
   BookmarkCheck, 
@@ -28,12 +27,14 @@ interface ExpeditionViewProps {
 }
 
 const THEME_PRESETS = [
-  'Deep Sea & Oceanic Leviathans (Aquarius)',
-  'Orbital Starship Fabrication & Salvage',
+  'Deep Sea Fishing & Tropical Angler (Aquarius)',
+  'Orbital Starship Customization & Scrapper',
+  'Companion Breeder & Exotic Zoology',
+  'Interstellar Trade Tycoon & Galactic Markets',
+  'Cosmic Architecture & Low-Gravity Stunts',
   'Autophage & World of Glass (Echoes)',
-  'Sentinel Capital Fleet Purge',
-  'Solar System Hermit & Foraging',
-  'Black Hole Void Roulette',
+  'Solar Glider & Paradise Wonder Tour',
+  'Sentinel Dreadnought Defense (Combat Challenge)',
 ];
 
 export const ExpeditionView: React.FC<ExpeditionViewProps> = ({
@@ -87,7 +88,7 @@ ${currentExpedition.phases
   .map(
     (phase) => `**PHASE ${phase.phase_number}: ${phase.phase_name}**\n` +
       phase.milestones
-        .map((m) => `${m.completed ? '[X]' : '[ ]'} ${m.task} (Reward: ${m.reward_flavor})`)
+        .map((m) => `${m.completed ? '[X]' : '[ ]'} ${m.task}`)
         .join('\n')
   )
   .join('\n\n')}
@@ -109,7 +110,7 @@ ${currentExpedition.phases
             EXPEDITION CREATOR // SEASONAL CAMPAIGN
           </span>
           <p className="text-[11px] text-[#7D8B99] mt-0.5">
-            Procedural 4-phase milestone campaigns simulating seasonal No Man's Sky expeditions.
+            Structured 4-phase campaigns with sequential milestone objectives simulating No Man's Sky community expeditions.
           </p>
         </div>
       </div>
@@ -320,10 +321,6 @@ ${currentExpedition.phases
                         <span className={`leading-snug ${m.completed ? 'line-through text-[#7D8B99]' : 'font-medium'}`}>
                           {m.task}
                         </span>
-                        <div className="flex items-center gap-1 text-[10px] font-mono text-[#FFB300]">
-                          <Gift className="w-3 h-3" />
-                          <span>Reward: {m.reward_flavor}</span>
-                        </div>
                       </div>
                     </div>
                   </div>

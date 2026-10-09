@@ -34,7 +34,7 @@ export const TransceiverView: React.FC<TransceiverViewProps> = ({
   onSaveDirective,
   isSaved,
 }) => {
-  const [intensity, setIntensity] = useState<IntensityLevel>('Interloper');
+  const [intensity, setIntensity] = useState<IntensityLevel>('Cadet');
   const [customFilterOpen, setCustomFilterOpen] = useState(false);
   const [customNotes, setCustomNotes] = useState('');
   const [copied, setCopied] = useState(false);
@@ -90,24 +90,24 @@ ${currentDirective.victory_condition}
     { label: string; desc: string; color: string; border: string; bg: string; icon: string }
   > = {
     Cadet: {
-      label: 'CADET',
-      desc: 'Relaxed exploration, culinary arts, architecture, scanning & photography.',
+      label: 'CADET (CASUAL)',
+      desc: 'Casual Exploration: Fishing, companion breeding, scenic base building, cooking, and low-stress planet exploration.',
       color: 'text-[#00F0FF]',
       border: 'border-[#00F0FF]/40',
       bg: 'bg-[#00F0FF]/10',
       icon: 'Sprout',
     },
     Interloper: {
-      label: 'INTERLOPER',
-      desc: 'Moderate mechanical constraints (No Hyperdrives, Foraging Only, Scrapper).',
+      label: 'INTERLOPER (VARIATION)',
+      desc: 'Playstyle Variations: Custom starship fabrication, trade route commerce, alien portal pilgrimages, and contraband smuggling.',
       color: 'text-[#FFB300]',
       border: 'border-[#FFB300]/40',
       bg: 'bg-[#FFB300]/10',
       icon: 'Shield',
     },
     'Atlas Protocol': {
-      label: 'ATLAS PROTOCOL',
-      desc: 'High-risk extreme survival (Permadeath, Zero Economy, No HUD, Dreadnoughts).',
+      label: 'ATLAS PROTOCOL (CHALLENGE)',
+      desc: 'High-Stakes Challenge: Pirate dreadnought capital battles, zero-unit self-reliance, and high-hazard survival.',
       color: 'text-[#FF2A4D]',
       border: 'border-[#FF2A4D]/50',
       bg: 'bg-[#FF2A4D]/15',
@@ -127,7 +127,7 @@ ${currentDirective.victory_condition}
           <span className="text-[#FF2A4D] font-bold">READY</span>
         </div>
         <p className="text-xs text-[#E6EDF3]/80 leading-relaxed">
-          Establish neural contact with the Atlas Core. Select your desired intensity threshold and transmit for an immediate, rule-bounded mission briefing.
+          Establish neural contact with the Atlas Core. Select your desired intensity threshold and transmit for direct, actionable mission objectives and rules.
         </p>
       </div>
 
@@ -283,13 +283,13 @@ ${currentDirective.victory_condition}
 
           {/* Vocation & Biome tags */}
           <div className="flex flex-wrap gap-2 my-3 text-[11px] font-mono">
-            <div className="bg-[#050709] border border-[#1B2631] px-2.5 py-1 rounded flex items-center gap-1 text-[#00F0FF]">
+            <div className="bg-[#050709] border border-[#1B2631] px-2.5 py-1 rounded flex items-center gap-1.5 text-[#00F0FF]">
               <Sparkles className="w-3 h-3" />
-              <span>VOCATION: {currentDirective.core_vocation}</span>
+              <span>ROLE: {currentDirective.core_vocation}</span>
             </div>
             {currentDirective.biome_target && (
-              <div className="bg-[#050709] border border-[#1B2631] px-2.5 py-1 rounded flex items-center gap-1 text-[#FFB300]">
-                <span>BIOME: {currentDirective.biome_target}</span>
+              <div className="bg-[#050709] border border-[#1B2631] px-2.5 py-1 rounded flex items-center gap-1.5 text-[#FFB300]">
+                <span>ENVIRONMENT: {currentDirective.biome_target}</span>
               </div>
             )}
           </div>
@@ -298,7 +298,7 @@ ${currentDirective.victory_condition}
           <div className="my-3">
             <h4 className="text-xs font-mono font-bold tracking-wider text-[#FF2A4D] uppercase flex items-center gap-1.5 mb-1.5">
               <ShieldAlert className="w-3.5 h-3.5" />
-              RULES OF ENGAGEMENT
+              ACTIVE RULES OF ENGAGEMENT
             </h4>
             <div className="flex flex-col gap-1.5">
               {currentDirective.rules_of_engagement.map((rule, idx) => (
@@ -318,10 +318,10 @@ ${currentDirective.victory_condition}
             <div className="flex items-center justify-between mb-1.5">
               <h4 className="text-xs font-mono font-bold tracking-wider text-[#00F0FF] uppercase flex items-center gap-1.5">
                 <CheckCircle2 className="w-3.5 h-3.5" />
-                PRIMARY DIRECTIVES
+                MISSION OBJECTIVES
               </h4>
               <span className="text-[10px] font-mono text-[#7D8B99]">
-                Tap to check off
+                Complete in NMS & tap to check off
               </span>
             </div>
 
@@ -353,7 +353,7 @@ ${currentDirective.victory_condition}
           <div className="mt-4 bg-gradient-to-r from-[#FF2A4D]/15 via-[#0E141B] to-[#FF2A4D]/5 border border-[#FF2A4D]/50 rounded-lg p-3">
             <h4 className="text-xs font-mono font-bold text-[#FF2A4D] uppercase flex items-center gap-1.5 mb-1">
               <Flame className="w-3.5 h-3.5" />
-              VICTORY CONDITION
+              PRIMARY VICTORY GOAL
             </h4>
             <p className="text-xs text-[#E6EDF3] font-semibold leading-relaxed">
               {currentDirective.victory_condition}
