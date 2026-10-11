@@ -46,3 +46,23 @@ Whether you are looking for chill planetary safaris, high-altitude stellar base 
 
 ## 📦 Deploying to GitHub Pages
 https://reg0lino.github.io/NMS-Randomizer/
+
+---
+
+## ⚠️ Important: GitHub Pages White Screen Fix
+
+If you see a blank or white screen when visiting `https://reg0lino.github.io/NMS-Randomizer/`:
+
+### Why this happens:
+GitHub Pages can deploy in two ways:
+1. **GitHub Actions (Modern Vite SPA mode - Recommended)**: It runs `npm run build` and serves the compiled bundle from `dist/`.
+2. **Deploy from a branch (Classic mode)**: If your GitHub repository is configured to deploy directly from the **`main`** branch root rather than **GitHub Actions**, GitHub serves the uncompiled raw `index.html` which references `/src/main.tsx`. Mobile browsers cannot execute raw unbundled TypeScript files directly, which results in a white screen.
+
+### How to fix it in 30 seconds:
+1. On GitHub, navigate to your repository: **`reg0lino/NMS-Randomizer`**.
+2. Click **Settings** (gear icon) > **Pages** (in the left sidebar).
+3. Under **Build and deployment**:
+   - Change **Source** from *"Deploy from a branch"* to **"GitHub Actions"**.
+4. That is it! GitHub Actions will trigger `.github/workflows/deploy.yml`, build the production bundle, and your site will be live and visible.
+
+*(Note: We have also updated `.github/workflows/deploy.yml` with an automated fallback that publishes the compiled `dist` bundle to a `gh-pages` branch so both methods work).*
