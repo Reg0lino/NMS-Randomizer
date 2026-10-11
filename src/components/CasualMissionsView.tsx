@@ -532,7 +532,7 @@ export const CasualMissionsView: React.FC<CasualMissionsViewProps> = ({
           </button>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
           {MISSION_CATEGORIES.map((cat) => {
             const isSelected = selectedCategories.includes(cat.id);
             const IconComponent = CATEGORY_ICONS[cat.icon] || Globe;
@@ -577,7 +577,7 @@ export const CasualMissionsView: React.FC<CasualMissionsViewProps> = ({
                       />
                     )}
                   </div>
-                  <p className="text-[11px] text-[#7D8B99] mt-0.5 line-clamp-1 leading-snug">
+                  <p className="text-xs sm:text-sm text-[#7D8B99] mt-1 leading-relaxed">
                     {cat.shortDesc}
                   </p>
                 </div>
@@ -640,7 +640,7 @@ export const CasualMissionsView: React.FC<CasualMissionsViewProps> = ({
             <span className="text-[10px] text-[#7D8B99]">1-Tap Discovery</span>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
             <button
               type="button"
               onClick={handleRandomizeCategories}
