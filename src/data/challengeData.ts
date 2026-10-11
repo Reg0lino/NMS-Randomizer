@@ -15,6 +15,10 @@ export const AXIS_VOCATIONS: AxisOption[] = [
   { id: 'voc_autophage', name: 'Autophage Disciple', desc: 'Uncloak harmonic camps on Dissonant worlds, solve runic puzzles, and craft custom Voltaic Staves.', icon: 'Cpu', tier: 'Variation' },
   { id: 'voc_homestead', name: 'Planetary Homesteader', desc: 'Establish an automated homestead with agricultural biodomes, gas extractors, and mineral silos.', icon: 'Globe', tier: 'Variation' },
   { id: 'voc_bounty', name: 'Pirate Purger', desc: 'Engage in space dogfights, hunt pirate bounty targets, and disable pirate dreadnought capitals.', icon: 'Crosshair', tier: 'Challenge' },
+  { id: 'voc_orbital_architect', name: 'Orbital Stellar Wayfinder', desc: 'Build high-altitude sub-orbital waypoints, solar flares observation decks, and stellar navigational relays.', icon: 'Radio', tier: 'Variation' },
+  { id: 'voc_minotaur_purifier', name: 'Minotaur Titan Purifier', desc: 'Pilot heavy Minotaur mech into infested worlds, eradicate Vile Brood worm nests, and harvest vile flesh.', icon: 'Crosshair', tier: 'Variation' },
+  { id: 'voc_exocraft_gladiator', name: 'Exocraft Combat Specialist', desc: 'Undertake vehicle-exclusive tasks: fight Sentinel drones from Roamer cockpits & mine nodes with Colossus.', icon: 'Zap', tier: 'Variation' },
+  { id: 'voc_guild_envoy', name: 'Galactic Guild Envoy', desc: 'Elevate race standing (+3 to +5) with Gek, Vy\'keen, Korvax, or Outlaw syndicates via contracts & sacred relics.', icon: 'BookOpen', tier: 'Casual' },
 ];
 
 export const AXIS_ECONOMY: AxisOption[] = [
@@ -37,6 +41,8 @@ export const AXIS_MOBILITY: AxisOption[] = [
   { id: 'mob_blackhole', name: 'Black Hole Roulette', desc: 'Black Hole Roulette: Travel long cosmic distances strictly by diving through anomaly black holes.', tier: 'Variation' },
   { id: 'mob_overland', name: 'Scenic Overland Trek', desc: 'Foot & Rover Trek: Journey between surface waypoints on foot or exocraft without short-hop flight.', tier: 'Variation' },
   { id: 'mob_nohud', name: 'No-HUD Cinematic Immersion', desc: 'HUD-Free Immersion (Hardcore): Disable all HUD, compass, and visor markers for pure visual navigation.', tier: 'Challenge' },
+  { id: 'mob_minotaur_only', name: 'Minotaur Mech Cockpit Isolation', desc: 'Vehicle Restriction: Traverse planetary surface exclusively inside the Minotaur heavy mech without exiting.', tier: 'Variation' },
+  { id: 'mob_orbital_perch', name: 'Sub-Orbital Ceiling Ascension', desc: 'Atmospheric Elevation: Maintain base camp and operations strictly at maximum build height (>1,000u) overlooking the planetary curve.', tier: 'Variation' },
 ];
 
 export const AXIS_BIOMES: AxisOption[] = [
@@ -366,6 +372,90 @@ export const OFFLINE_DIRECTIVES: Directive[] = [
     victory_condition: 'Rebuild a salvaged starship to full flight capability without spending a single commercial Unit.',
     biome_target: 'Dissonant / Corrupted World',
     timestamp: 1720000200000
+  },
+  {
+    protocol_id: 'ATLS-COSMOS-01',
+    codename: 'OPERATION: SOLAR STELLAR BEACON',
+    classification: 'Orbital Waypoint | Cosmos Architecture',
+    intensity: 'Interloper',
+    flavor_quote: 'Climb above cloud layers where the solar corona fills the horizon. Anchor an automated beacon for the starways.',
+    core_vocation: 'Orbital Stellar Wayfinder',
+    rules_of_engagement: [
+      'Construct a high-altitude observation base at the atmospheric ceiling (>1,000u elevation).',
+      'Align your main observation deck directly facing the primary star / stellar corona.',
+      'Wire 100% solar and battery clean power grid with zero fossil fuel generators.'
+    ],
+    primary_directives: [
+      'Ascend to sub-orbital elevation overlooking the curvature of an airless or ringed world.',
+      'Drop a Base Computer and build a glass observation rotunda with a starship landing pad.',
+      'Summon your Capital Freighter directly beneath the platform for a panoramic fleet view.'
+    ],
+    victory_condition: 'Establish and register a functional sub-orbital waypoint station with an operational teleporter grid.',
+    biome_target: 'Airless Low-Gravity Moon',
+    timestamp: 1720002200000
+  },
+  {
+    protocol_id: 'ATLS-COSMOS-02',
+    codename: 'OPERATION: TITAN WORM CLEANSING',
+    classification: 'Minotaur Purification | Heavy Mech Strike',
+    intensity: 'Interloper',
+    flavor_quote: 'The planetary crust heaves with subterranean rot. Mount the Minotaur; purge the crawling Brood.',
+    core_vocation: 'Minotaur Titan Purifier',
+    rules_of_engagement: [
+      'All combat engagements against infested nests must be conducted strictly from the Minotaur heavy mech.',
+      'Neutralize emerging Vile Brood worms and crawling grubs using Minotaur Cannon or Bore.',
+      'Harvest cursed bio-matter to verify planetary sector quarantine.'
+    ],
+    primary_directives: [
+      'Land on an Infested World and deploy your Minotaur Exocraft.',
+      'Target and destroy 3 writhing Titan Worm Vile Brood nests.',
+      'Harvest 250+ Vile Flesh or Cursed Dust dropped from neutralized horrors.'
+    ],
+    victory_condition: 'Eradicate 3 titan worm hives and extract bio-matter exclusively using the Minotaur without dismounting on foot.',
+    biome_target: 'Dissonant / Corrupted World',
+    timestamp: 1720002300000
+  },
+  {
+    protocol_id: 'ATLS-COSMOS-03',
+    codename: 'OPERATION: EXOCRAFT DUNE GLADIATOR',
+    classification: 'Vehicle Combat Restriction | Speed Trial',
+    intensity: 'Cadet',
+    flavor_quote: 'Alien soil is treacherous. Lock yourself into the Roamer or Pilgrim cockpit and conquer the horizon on wheels.',
+    core_vocation: 'Exocraft Combat Specialist',
+    rules_of_engagement: [
+      'Planetary transit and defensive combat restricted exclusively to the Exocraft vehicle.',
+      'Engage territorial Sentinel drone patrols using mounted vehicle lasers and cannons.',
+      'Maintain full-throttle booster momentum across extreme alien terrain.'
+    ],
+    primary_directives: [
+      'Deploy a Roamer or Pilgrim Geobay on a rugged desert or mountain world.',
+      'Neutralize 6 Sentinel drones or predators from within the vehicle cockpit.',
+      'Sustain top-speed turbo boost across terrain ridges for a continuous 2,000u run.'
+    ],
+    victory_condition: 'Complete vehicle-only combat and a 2,000u speed run without ever stepping foot onto the ground.',
+    biome_target: 'Outlaw Frontier Red Star',
+    timestamp: 1720002400000
+  },
+  {
+    protocol_id: 'ATLS-COSMOS-04',
+    codename: 'OPERATION: CLAN REPUTATION CONCORD',
+    classification: 'Faction Standing Milestone | Galactic Diplomacy',
+    intensity: 'Cadet',
+    flavor_quote: 'The star-races demand proof of loyalty. Raise your banner and earn the highest endorsement of the clans.',
+    core_vocation: 'Galactic Guild Envoy',
+    rules_of_engagement: [
+      'Elevate faction standing through honorable contracts and offering sacred relics to station envoys.',
+      'Master local alien dialects by deciphering planetary Knowledge Stones.',
+      'Claim official daily rewards from the Space Station Guild Representative.'
+    ],
+    primary_directives: [
+      'Select a controlling race (Vy\'keen, Korvax, or Gek) and complete 2 space station guild contracts.',
+      'Gift 3 cultural relics (Daggers, Casings, or Relics) to station inhabitants.',
+      'Raise your standing milestone with the chosen race by at least 3 rank levels.'
+    ],
+    victory_condition: 'Achieve a +3 Standing Milestone elevation and unlock high-tier Guild Envoy supplies.',
+    biome_target: 'Lush Chameleon Paradise',
+    timestamp: 1720002500000
   }
 ];
 

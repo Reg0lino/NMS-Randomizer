@@ -8,7 +8,11 @@ export type MissionCategory =
   | 'space_salvage'
   | 'planet_expedition'
   | 'classic_expedition'
-  | 'aquarius_fishing';
+  | 'aquarius_fishing'
+  | 'orbital_stellar'
+  | 'exocraft_combat'
+  | 'minotaur_purification'
+  | 'faction_standing';
 
 export interface MissionStep {
   step_number: number;
@@ -39,6 +43,13 @@ export interface MissionLore {
   canonEntity?: string;
 }
 
+export interface PhotoObjective {
+  title: string; // e.g. "Panoramic Observatory Vista", "Atlas Monolith Alignment"
+  description: string; // Specific Photo Mode composition guidance
+  targetSubject: string; // e.g. "Space Anomaly Core", "Binary Stars & Observatory", "Titan Worm Eruption"
+  bonusNanites?: number;
+}
+
 export interface MissionPath {
   path_id: string; // "alpha" | "beta" | "gamma"
   themeTitle: string; // Thematic title of this branch
@@ -46,6 +57,7 @@ export interface MissionPath {
   description: string;
   tacticalAdvantage: string;
   steps: MissionStep[];
+  photoGoal?: PhotoObjective; // Path-specific photography sub-goal
   reward?: string;
 }
 
@@ -66,6 +78,7 @@ export interface CasualMission {
   paths?: MissionPath[];
   activePathId?: string;
   bonusGoal?: string;
+  photoGoal?: PhotoObjective;
   reward?: string;
   createdAt: number;
   saved?: boolean;
@@ -154,4 +167,12 @@ export interface GenerationConfig {
   intensity: IntensityLevel;
   useAi: boolean;
   customNotes?: string;
+}
+
+export interface TtsSettings {
+  enabled: boolean;
+  voiceURI: string;
+  rate: number;
+  pitch: number;
+  persona: 'exosuit' | 'atlas' | 'korvax' | 'vykeen' | 'custom';
 }

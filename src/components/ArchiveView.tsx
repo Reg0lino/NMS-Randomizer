@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Directive, WeaverManifesto, Expedition, CasualMission } from '../types';
 import { OFFLINE_DIRECTIVES } from '../data/challengeData';
+import { PRESET_CASUAL_MISSIONS } from '../data/casualMissionData';
 import { 
   BookOpen, 
   Trash2, 
@@ -55,7 +56,8 @@ export const ArchiveView: React.FC<ArchiveViewProps> = ({
   onImportJson,
   onClearAll,
 }) => {
-  const [filter, setFilter] = useState<'all' | 'missions' | 'expeditions' | 'directives' | 'manifestos' | 'offline_presets'>('all');
+  const [filter, setFilter] = useState<'all' | 'missions' | 'offline_missions' | 'expeditions' | 'directives' | 'manifestos'>('all');
+  const [offlineTypeFilter, setOfflineTypeFilter] = useState<'all' | 'casual' | 'directives'>('all');
   const [importModalOpen, setImportModalOpen] = useState(false);
   const [importText, setImportText] = useState('');
   const [importStatus, setImportStatus] = useState<string | null>(null);
@@ -170,6 +172,21 @@ export const ArchiveView: React.FC<ArchiveViewProps> = ({
         <button
           onClick={() => {
             playTerminalClick();
+            setFilter('offline_missions');
+          }}
+          className={`px-2.5 py-1.5 rounded border whitespace-nowrap flex items-center gap-1 ${
+            filter === 'offline_missions'
+              ? 'bg-purple-500/20 border-purple-400 text-[#E6EDF3] font-bold'
+              : 'bg-[#050709] border-[#1B2631] text-[#7D8B99] hover:text-[#E6EDF3]'
+          }`}
+        >
+          <Sparkles className="w-3 h-3 text-purple-400" />
+          <span>OFFLINE MISSIONS ({PRESET_CASUAL_MISSIONS.length + OFFLINE_DIRECTIVES.length})</span>
+        </button>
+
+        <button
+          onClick={() => {
+            playTerminalClick();
             setFilter('expeditions');
           }}
           className={`px-2.5 py-1.5 rounded border whitespace-nowrap flex items-center gap-1 ${
@@ -210,21 +227,6 @@ export const ArchiveView: React.FC<ArchiveViewProps> = ({
         >
           <GitFork className="w-3 h-3 text-[#00F0FF]" />
           <span>MANIFESTOS ({savedManifestos.length})</span>
-        </button>
-
-        <button
-          onClick={() => {
-            playTerminalClick();
-            setFilter('offline_presets');
-          }}
-          className={`px-2.5 py-1.5 rounded border whitespace-nowrap flex items-center gap-1 ${
-            filter === 'offline_presets'
-              ? 'bg-purple-500/20 border-purple-400 text-[#E6EDF3] font-bold'
-              : 'bg-[#050709] border-[#1B2631] text-[#7D8B99] hover:text-[#E6EDF3]'
-          }`}
-        >
-          <Sparkles className="w-3 h-3 text-purple-400" />
-          <span>OFFLINE CACHE ({OFFLINE_DIRECTIVES.length})</span>
         </button>
       </div>
 
@@ -295,44 +297,166 @@ export const ArchiveView: React.FC<ArchiveViewProps> = ({
               </div>
             </div>
           ))}
-        {/* Offline Presets View */}
-        {filter === 'offline_presets' && (
-          <div className="flex flex-col gap-2">
-            <div className="bg-[#0E141B] p-2.5 rounded border border-[#1B2631] text-xs font-mono text-[#7D8B99]">
-              16 curated, offline-ready directives pre-cached directly in the terminal memory. Tap "LOAD" to activate in the Transceiver view immediately.
-            </div>
-
-            {OFFLINE_DIRECTIVES.map((d) => (
-              <div
-                key={d.protocol_id}
-                className="bg-[#0E141B] border border-[#1B2631] p-3 rounded-lg flex items-center justify-between gap-3 hover:border-[#FF2A4D]/50 transition-colors"
-              >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-[#FF2A4D]">
-                      {d.protocol_id}
-                    </span>
-                    <span className="text-[10px] font-mono px-1.5 py-0.2 rounded border bg-[#050709] border-[#1B2631] text-[#00F0FF]">
-                      {d.intensity}
-                    </span>
-                  </div>
-                  <h4 className="text-sm font-bold text-[#E6EDF3] mt-0.5">{d.codename}</h4>
-                  <p className="text-xs text-[#7D8B99] italic mt-0.5 line-clamp-1">
-                    "{d.flavor_quote}"
-                  </p>
-                </div>
-
+        {/* Offline Missions & Directives View */}
+        {filter === 'offline_missions' && (
+          <div className="flex flex-col gap-3">
+            <div className="bg-[#0E141B] p-2.5 rounded-lg border border-purple-500/30 text-xs font-mono text-[#7D8B99] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+              <div>
+                <span className="text-purple-400 font-bold">100% OFFLINE VAULT: </span>
+                <span>Curated missions and directives pre-cached directly in memory. Zero tokens or network connection required.</span>
+              </div>
+              <div className="flex items-center gap-1 shrink-0 self-end sm:self-auto">
                 <button
                   onClick={() => {
                     playTerminalClick();
-                    onSelectDirective(d);
+                    setOfflineTypeFilter('all');
                   }}
-                  className="px-3 py-1.5 rounded border bg-[#FF2A4D]/15 border-[#FF2A4D] text-[#FF2A4D] hover:bg-[#FF2A4D] hover:text-white transition-all text-xs font-mono font-bold active:scale-95"
+                  className={`px-2 py-1 rounded text-[11px] font-mono border ${
+                    offlineTypeFilter === 'all'
+                      ? 'bg-purple-500/20 border-purple-400 text-[#E6EDF3] font-bold'
+                      : 'bg-[#050709] border-[#1B2631] text-[#7D8B99] hover:text-[#E6EDF3]'
+                  }`}
                 >
-                  LOAD
+                  ALL ({PRESET_CASUAL_MISSIONS.length + OFFLINE_DIRECTIVES.length})
+                </button>
+                <button
+                  onClick={() => {
+                    playTerminalClick();
+                    setOfflineTypeFilter('casual');
+                  }}
+                  className={`px-2 py-1 rounded text-[11px] font-mono border ${
+                    offlineTypeFilter === 'casual'
+                      ? 'bg-[#00F0FF]/20 border-[#00F0FF] text-[#E6EDF3] font-bold'
+                      : 'bg-[#050709] border-[#1B2631] text-[#7D8B99] hover:text-[#E6EDF3]'
+                  }`}
+                >
+                  CASUAL ({PRESET_CASUAL_MISSIONS.length})
+                </button>
+                <button
+                  onClick={() => {
+                    playTerminalClick();
+                    setOfflineTypeFilter('directives');
+                  }}
+                  className={`px-2 py-1 rounded text-[11px] font-mono border ${
+                    offlineTypeFilter === 'directives'
+                      ? 'bg-[#FF2A4D]/20 border-[#FF2A4D] text-[#E6EDF3] font-bold'
+                      : 'bg-[#050709] border-[#1B2631] text-[#7D8B99] hover:text-[#E6EDF3]'
+                  }`}
+                >
+                  DIRECTIVES ({OFFLINE_DIRECTIVES.length})
                 </button>
               </div>
-            ))}
+            </div>
+
+            {/* Offline Casual Missions */}
+            {(offlineTypeFilter === 'all' || offlineTypeFilter === 'casual') && (
+              <div className="flex flex-col gap-2">
+                {offlineTypeFilter === 'all' && (
+                  <div className="text-[11px] font-mono text-[#00F0FF] font-bold uppercase tracking-wider flex items-center gap-1.5 pt-1">
+                    <Rocket className="w-3.5 h-3.5" />
+                    <span>CURATED OFFLINE MISSIONS ({PRESET_CASUAL_MISSIONS.length})</span>
+                  </div>
+                )}
+                {PRESET_CASUAL_MISSIONS.map((m) => (
+                  <div
+                    key={m.id}
+                    className="bg-[#0E141B] border border-purple-500/30 hover:border-[#00F0FF]/60 p-3 rounded-lg flex items-center justify-between gap-3 transition-colors"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        {m.category === 'culinary_restaurant' ? (
+                          <UtensilsCrossed className="w-3.5 h-3.5 text-[#FF7A00]" />
+                        ) : (
+                          <Rocket className="w-3.5 h-3.5 text-[#00F0FF]" />
+                        )}
+                        <span className="font-mono text-xs font-bold text-purple-300">
+                          {m.protocol_id}
+                        </span>
+                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded border bg-[#050709] border-[#1B2631] text-[#00F0FF]">
+                          {m.categoryName}
+                        </span>
+                        <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-purple-500/15 text-purple-300 border border-purple-500/30">
+                          OFFLINE READY
+                        </span>
+                      </div>
+                      <h4 className="text-sm font-bold text-[#E6EDF3] mt-0.5 truncate">{m.title}</h4>
+                      <p className="text-xs text-[#7D8B99] line-clamp-1 mt-0.5 flex items-center gap-1">
+                        <MapPin className="w-3 h-3 text-[#00E5A3] shrink-0" />
+                        <span className="truncate">{m.targetLocation}</span>
+                        {m.paths && m.paths.length > 0 ? (
+                          <span className="shrink-0">• 3 Thematic Paths</span>
+                        ) : (
+                          <span className="shrink-0">• {m.steps.length} Steps</span>
+                        )}
+                      </p>
+                      {m.flavor_quote && (
+                        <p className="text-[11px] text-[#7D8B99]/80 italic line-clamp-1 mt-0.5">
+                          "{m.flavor_quote}"
+                        </p>
+                      )}
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        playTerminalClick();
+                        onSelectCasualMission(m);
+                      }}
+                      className="p-1.5 px-3 rounded-lg border bg-[#00F0FF]/15 border-[#00F0FF]/60 text-[#00F0FF] hover:bg-[#00F0FF]/25 transition-all text-xs font-mono font-bold active:scale-95 flex items-center gap-1 shrink-0"
+                      title="Load this offline mission"
+                    >
+                      <Rocket className="w-3 h-3 text-[#00F0FF]" />
+                      <span>LOAD</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Offline Directives */}
+            {(offlineTypeFilter === 'all' || offlineTypeFilter === 'directives') && (
+              <div className="flex flex-col gap-2">
+                {offlineTypeFilter === 'all' && (
+                  <div className="text-[11px] font-mono text-[#FF2A4D] font-bold uppercase tracking-wider flex items-center gap-1.5 pt-2">
+                    <Radio className="w-3.5 h-3.5" />
+                    <span>CURATED OFFLINE DIRECTIVES ({OFFLINE_DIRECTIVES.length})</span>
+                  </div>
+                )}
+                {OFFLINE_DIRECTIVES.map((d) => (
+                  <div
+                    key={d.protocol_id}
+                    className="bg-[#0E141B] border border-[#1B2631] hover:border-[#FF2A4D]/50 p-3 rounded-lg flex items-center justify-between gap-3 transition-colors"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-bold text-[#FF2A4D]">
+                          {d.protocol_id}
+                        </span>
+                        <span className="text-[10px] font-mono px-1.5 py-0.2 rounded border bg-[#050709] border-[#1B2631] text-[#00F0FF]">
+                          {d.intensity}
+                        </span>
+                        <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-purple-500/15 text-purple-300 border border-purple-500/30">
+                          OFFLINE READY
+                        </span>
+                      </div>
+                      <h4 className="text-sm font-bold text-[#E6EDF3] mt-0.5 truncate">{d.codename}</h4>
+                      <p className="text-xs text-[#7D8B99] italic mt-0.5 line-clamp-1">
+                        "{d.flavor_quote}"
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        playTerminalClick();
+                        onSelectDirective(d);
+                      }}
+                      className="px-3 py-1.5 rounded border bg-[#FF2A4D]/15 border-[#FF2A4D] text-[#FF2A4D] hover:bg-[#FF2A4D] hover:text-white transition-all text-xs font-mono font-bold active:scale-95 shrink-0"
+                    >
+                      LOAD
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -489,22 +613,22 @@ export const ArchiveView: React.FC<ArchiveViewProps> = ({
           })}
 
         {/* Empty state */}
-        {totalSaved === 0 && filter !== 'offline_presets' && (
+        {totalSaved === 0 && filter !== 'offline_missions' && (
           <div className="bg-[#0E141B]/60 border border-dashed border-[#1B2631] rounded-lg p-8 text-center text-[#7D8B99]">
             <p className="text-xs font-mono uppercase tracking-wider mb-1">
               // ARCHIVE EMPTY //
             </p>
             <p className="text-xs text-[#7D8B99] max-w-sm mx-auto mb-3">
-              No saved protocols yet. Save generated directives from Transceiver, Weaver, or Expedition modes, or explore the pre-cached offline directives.
+              No saved protocols yet. Save generated directives from Transceiver, Weaver, or Expedition modes, or explore the pre-cached offline missions.
             </p>
             <button
               onClick={() => {
                 playTerminalClick();
-                setFilter('offline_presets');
+                setFilter('offline_missions');
               }}
-              className="px-3 py-1.5 rounded border bg-[#FF2A4D]/15 border-[#FF2A4D] text-[#FF2A4D] text-xs font-mono font-bold"
+              className="px-3 py-1.5 rounded border bg-purple-500/20 border-purple-400 text-purple-300 text-xs font-mono font-bold hover:bg-purple-500/30 transition-colors"
             >
-              BROWSE 16 OFFLINE DIRECTIVES
+              BROWSE OFFLINE MISSIONS ({PRESET_CASUAL_MISSIONS.length + OFFLINE_DIRECTIVES.length})
             </button>
           </div>
         )}

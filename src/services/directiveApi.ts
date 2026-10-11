@@ -388,11 +388,12 @@ export async function fetchOrGenerateCasualMission(
   if (userKey) {
     const isCombined = categoriesList.length > 1;
     const catMeta = MISSION_CATEGORIES.find((c) => c.id === primaryCategory);
-    const prompt = `Generate a single fun, casual No Man's Sky mission that ${
+    const prompt = `Generate a single fun, creative No Man's Sky mission that ${
       isCombined
         ? `synthesizes ${categoriesList.length} distinct styles (${categoriesList.join(', ')})`
         : `explores ${catMeta?.name}`
     }.
+Incorporate elements from the Cosmos update and all previous eras (orbital star waypoints, Minotaur mech purge of titan worm nests, exocraft-restricted rally combat, faction standing milestones, custom ship building).
 ${targetBiome ? `Target Biome: ${targetBiome}` : ''}
 ${customNotes ? `User Note: ${customNotes}` : ''}
 
@@ -451,9 +452,21 @@ Output JSON with schema:
         { "step_number": 2, "title": "string", "description": "string" },
         { "step_number": 3, "title": "string", "description": "string" },
         { "step_number": 4, "title": "string", "description": "string" }
-      ]
+      ],
+      "photoGoal": {
+        "title": "string",
+        "targetSubject": "string",
+        "description": "string",
+        "bonusNanites": 500
+      }
     }
   ],
+  "photoGoal": {
+    "title": "string",
+    "targetSubject": "string",
+    "description": "string",
+    "bonusNanites": 500
+  },
   "restaurantSpec": {
     "venueType": "string",
     "aestheticTheme": "string",

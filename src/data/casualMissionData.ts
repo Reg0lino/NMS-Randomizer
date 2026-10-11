@@ -63,6 +63,34 @@ export const MISSION_CATEGORIES: {
     icon: 'Compass',
     badgeColor: 'text-[#F59E0B] bg-[#F59E0B]/15 border-[#F59E0B]/40',
   },
+  {
+    id: 'orbital_stellar',
+    name: 'Orbital & Stellar Waypoints',
+    shortDesc: 'Construct sub-orbital observation stations, solar beacons & stellar waypoints in planetary orbit',
+    icon: 'Radio',
+    badgeColor: 'text-[#A855F7] bg-[#A855F7]/15 border-[#A855F7]/40',
+  },
+  {
+    id: 'minotaur_purification',
+    name: 'Minotaur Titan Worm Purge',
+    shortDesc: 'Deploy heavy Minotaur mech to eradicate Vile Brood grubs & exterminate infested titan worm nests',
+    icon: 'Crosshair',
+    badgeColor: 'text-[#EF4444] bg-[#EF4444]/15 border-[#EF4444]/40',
+  },
+  {
+    id: 'exocraft_combat',
+    name: 'Exocraft Combat & Vehicle Rallies',
+    shortDesc: 'Vehicle-restricted operations: Roamer sentinel chases, Colossus core mining & Pilgrim drift runs',
+    icon: 'Car',
+    badgeColor: 'text-[#F97316] bg-[#F97316]/15 border-[#F97316]/40',
+  },
+  {
+    id: 'faction_standing',
+    name: 'Galactic Faction Standings',
+    shortDesc: 'Elevate race standing (+3 to +5) with Gek, Vy\'keen, Korvax & Outlaw mercenary guilds',
+    icon: 'Award',
+    badgeColor: 'text-[#10B981] bg-[#10B981]/15 border-[#10B981]/40',
+  },
 ];
 
 export const PRESET_CASUAL_MISSIONS: CasualMission[] = [
@@ -608,6 +636,12 @@ export const PRESET_CASUAL_MISSIONS: CasualMission[] = [
       },
     ],
     bonusGoal: 'Adopt 1 local creature from this planet to keep as a resident pet at your new base.',
+    photoGoal: {
+      title: 'Bioluminescent Meadow Sunset',
+      targetSubject: 'Glowing Grass & Glass Base Solarium',
+      description: 'Capture Photo Mode during nocturnal hours when bioluminescent flora emits neon pulses against the backdrop of your glass retreat.',
+      bonusNanites: 500,
+    },
     reward: 'Scenic personal homeworld sanctuary uploaded to the teleporter network',
     createdAt: 1720000500000,
   },
@@ -930,6 +964,390 @@ export const PRESET_CASUAL_MISSIONS: CasualMission[] = [
     bonusGoal: 'Build a small traveler\'s waypoint base near the destination portal exit.',
     reward: 'Complete Stargate access, 16 Glyphs catalogued & permanent waypoint hub',
     createdAt: 1720001300000,
+  },
+  // 8. Orbital & Stellar Waypoints (Cosmos Update)
+  {
+    id: 'mis_orbital_solar_waypoint',
+    protocol_id: 'ORBT-01',
+    title: 'Helios Crown: Stellar Orbit Waypoint',
+    category: 'orbital_stellar',
+    categoryName: 'Orbital & Stellar Waypoints',
+    categoryIcon: 'Radio',
+    flavor_quote: 'Anchor an observation platform in the upper atmosphere facing the primary star. The solar flares hold lost broadcast frequencies.',
+    targetLocation: 'Upper Stratosphere / Sub-Orbital Threshold of an Airless Moon',
+    lore: {
+      origin: 'Korvax Sub-Stellar Array #09',
+      headline: 'The Solar Observatories of the First Convergence',
+      narrative: 'Ancient Korvax research units once built floating waypoints along the boundary between stellar vacuum and upper atmospheres. These orbital relays watched starspots for binary transmissions before the Atlas cycle fractured.',
+      historicalContext: 'First Convergence Stellar Astronomy',
+      canonEntity: 'Priest Entity Nada'
+    },
+    steps: [
+      {
+        step_number: 1,
+        title: 'Survey Sub-Orbital Elevation',
+        description: 'Ascend from an airless moon using jetpack burst or terrain manipulation to reach maximum building height (>1,000u) overlooking the planetary curve.',
+        completed: false,
+      },
+      {
+        step_number: 2,
+        title: 'Anchor High-Altitude Base Computer',
+        description: 'Drop a Base Computer at the orbital ceiling to establish the "Helios Crown Stellar Relay".',
+        completed: false,
+      },
+      {
+        step_number: 3,
+        title: 'Construct Solar Observation Deck',
+        description: 'Build a glass observation rotunda, 4 Solar Panels, and a Save Beacon directly aligned with the system star.',
+        completed: false,
+      },
+      {
+        step_number: 4,
+        title: 'Install Teleportation Terminal',
+        description: 'Wire a Base Teleport Module and battery grid, creating a permanent sub-orbital station for fleet view.',
+        completed: false,
+      },
+    ],
+    bonusGoal: 'Summon your Capital Freighter directly below the orbital platform for a panoramic fleet screenshot.',
+    photoGoal: {
+      title: 'Helios Crown Solar Flare Framing',
+      targetSubject: 'Solar Corona, Binary Star & Sub-Orbital Rotunda',
+      description: 'Engage Photo Mode from the edge of your high-altitude observation rotunda framing the primary star rising over the planetary curve.',
+      bonusNanites: 600,
+    },
+    reward: 'Permanent Orbital Waypoint Hub + 1,200 Nanite discovery telemetry',
+    createdAt: 1720001400000,
+  },
+  {
+    id: 'mis_orbital_station_relay',
+    protocol_id: 'ORBT-02',
+    title: 'Stellar Horizon: Planetary Ring Waypoint',
+    category: 'orbital_stellar',
+    categoryName: 'Orbital & Stellar Waypoints',
+    categoryIcon: 'Radio',
+    flavor_quote: 'Where the planet rings slice through the sky like silver razor wire, establish a communications beacon.',
+    targetLocation: 'Mountain Peak intersecting Planetary Rings',
+    lore: {
+      origin: 'Stellar Cartography Log: Euclid Outer Rim',
+      headline: 'The Ring-Passage Beacon',
+      narrative: 'When planetary rings intersect atmospheric ceilings, interstellar static creates localized sensory echoes. Establishing an automated waypoint here gives passing freighters calibration points across hyperspace lanes.',
+      historicalContext: 'Free Merchant Caravan Navigation',
+      canonEntity: 'Specialist Polo'
+    },
+    steps: [
+      {
+        step_number: 1,
+        title: 'Locate a Ringed World Intersection',
+        description: 'Fly to a ringed planet and find a high mountain ridge that touches or aligns with the dust plane of the rings.',
+        completed: false,
+      },
+      {
+        step_number: 2,
+        title: 'Deploy Long-Range Signal Booster',
+        description: 'Place a Signal Booster or Save Beacon on the highest elevation point along the ring trajectory.',
+        completed: false,
+      },
+      {
+        step_number: 3,
+        title: 'Erect Ring-Watch Spire',
+        description: 'Construct a vertical cylindrical tower topped with an observation lounge and landing pad.',
+        completed: false,
+      },
+      {
+        step_number: 4,
+        title: 'Broadcast Planetary Coordinates',
+        description: 'Activate your Analysis Visor, tag planetary coordinates, and save the waypoint to your galactic discoveries.',
+        completed: false,
+      },
+    ],
+    bonusGoal: 'Land your custom fabricated starship on the spire pad during a golden star-rise.',
+    reward: 'Galactic Waypoint Registration + Emergency Signal Scanners',
+    createdAt: 1720001500000,
+  },
+  // 9. Minotaur Titan Worm Purge
+  {
+    id: 'mis_minotaur_worm_purge',
+    protocol_id: 'MINO-01',
+    title: 'Titan Purge: Vile Brood Extermination',
+    category: 'minotaur_purification',
+    categoryName: 'Minotaur Titan Worm Purge',
+    categoryIcon: 'Crosshair',
+    flavor_quote: 'Mount the Minotaur mech. The soil shudders beneath heavy treads as titan tendrils erupt from the planetary crust.',
+    targetLocation: 'Infested World with Vile Brood Nests',
+    lore: {
+      origin: 'Vy\'keen Warrior Codex: Trial of the Wurm',
+      headline: 'The Cleansing of the Crawling Dark',
+      narrative: 'Vile Brood grubs burrow into corrupted planetary mantles, spawning titanic writhing horrors that devour outposts whole. Vy\'keen tradition permits only armored mechanized walkers to engage these biological monstrosities in honorable attrition.',
+      historicalContext: 'Vy\'keen Extermination Crusade',
+      canonEntity: 'Weapons Specialist Hirk'
+    },
+    steps: [
+      {
+        step_number: 1,
+        title: 'Locate an Infested Planet',
+        description: 'Scan systems for planets tagged "Infested", "The Nest", or exhibiting purple biological corruption.',
+        completed: false,
+      },
+      {
+        step_number: 2,
+        title: 'Deploy Minotaur Heavy Mech',
+        description: 'Call down your Minotaur Exocraft. Mount the cockpit or activate the Minotaur AI pilot module.',
+        completed: false,
+      },
+      {
+        step_number: 3,
+        title: 'Destroy 3 Titan Worm Nests',
+        description: 'Stomp into infested terrain and use the Minotaur Cannon or Bore to annihilate 3 writhing worm nests and eliminate spawned grubs.',
+        completed: false,
+      },
+      {
+        step_number: 4,
+        title: 'Harvest Vile Flesh & Cursed Dust',
+        description: 'Collect at least 250 Vile Flesh or Cursed Dust dropped from neutralized worm tendrils.',
+        completed: false,
+      },
+    ],
+    bonusGoal: 'Complete the entire nest purge exclusively using the Minotaur mech without firing handheld multi-tool weapons.',
+    photoGoal: {
+      title: 'Vile Titan Brood Breach',
+      targetSubject: 'Emerging Titan Worm & Armored Minotaur Cannon',
+      description: 'Time Photo Mode right as a colossal subterranean worm erupts from the planetary mantle with your Minotaur mech aimed at the horror.',
+      bonusNanites: 750,
+    },
+    reward: 'Vy\'keen Battle Honor, 800 Nanites & Bio-Hazard Purification Medal',
+    createdAt: 1720001600000,
+  },
+  {
+    id: 'mis_minotaur_ai_vanguard',
+    protocol_id: 'MINO-02',
+    title: 'Iron Vanguard: Sentinel Walker Showdown',
+    category: 'minotaur_purification',
+    categoryName: 'Minotaur Titan Worm Purge',
+    categoryIcon: 'Crosshair',
+    flavor_quote: 'Deploy your Minotaur alongside yourself as an autonomous AI bodyguard against Sentinel Walker forces.',
+    targetLocation: 'Extreme Sentinel Security Planet',
+    lore: {
+      origin: 'Hardframe Autophage Circuitry Notes',
+      headline: 'The Awoken Steel Companion',
+      narrative: 'Infusing an Exocraft Minotaur with Hardframe sentinel salvage creates an autonomous synthetic warrior that never sleeps. When high-alert drones descend, the mech charges forward with laser precision to shield its pilot.',
+      historicalContext: 'Autophage Hardframe Integration',
+      canonEntity: 'Iteration Tethys'
+    },
+    steps: [
+      {
+        step_number: 1,
+        title: 'Land on High-Security World',
+        description: 'Touch down on an Aggressive Sentinel planet with Gravitino Balls or Frenzied Sentinel alerts.',
+        completed: false,
+      },
+      {
+        step_number: 2,
+        title: 'Engage Minotaur Autonomous AI',
+        description: 'Summon your Minotaur and toggle its AI pilot protocol so it walks and fights autonomously at your side.',
+        completed: false,
+      },
+      {
+        step_number: 3,
+        title: 'Trigger Wave 5 Sentinel Assault',
+        description: 'Harvest a Gravitino Ball or blast a drone to trigger Sentinel pursuit up to Level 5 until a massive Sentinel Walker arrives.',
+        completed: false,
+      },
+      {
+        step_number: 4,
+        title: 'Fell the Walker & Claim Walker Brain',
+        description: 'Break both leg armor plates, destroy the core head carapace, and extract an intact pristine Walker Brain.',
+        completed: false,
+      },
+    ],
+    bonusGoal: 'Allow your Minotaur AI to land the decisive killing blow on the Sentinel Walker.',
+    reward: 'Pristine Walker Brain, Sentinel Pillar Maps & 1,500 Nanites',
+    createdAt: 1720001700000,
+  },
+  // 10. Exocraft Combat & Vehicle Rallies
+  {
+    id: 'mis_exocraft_sentinel_chase',
+    protocol_id: 'EXO-01',
+    title: 'Dust & Fury: Roamer Pursuit Trial',
+    category: 'exocraft_combat',
+    categoryName: 'Exocraft Combat & Vehicle Rallies',
+    categoryIcon: 'Car',
+    flavor_quote: 'Foot travel is strictly prohibited. Mount the Roamer rover, lock the mounted laser, and outrun the interceptor drones.',
+    targetLocation: 'Arid Desert / Scorched Dunes with High Sentinel Activity',
+    lore: {
+      origin: 'Pilgrim Outlaw Racing Log #77',
+      headline: 'The Dune Runners of the Scorched Waste',
+      narrative: 'Outlaw scavengers on dune worlds resolve territorial disputes not with starships, but with high-speed exocraft chases across open sand plains. To touch ground on foot is considered cowardice; only wheels and booster fuel matter.',
+      historicalContext: 'Outlaw Rover Smuggling Era',
+      canonEntity: 'Exocraft Specialist Radu'
+    },
+    steps: [
+      {
+        step_number: 1,
+        title: 'Summon Roamer Rover',
+        description: 'Deploy your Roamer Geobay or summon it via Exocraft Summoning Station on a desert world.',
+        completed: false,
+      },
+      {
+        step_number: 2,
+        title: 'Vehicle-Only Challenge: Provoke Drones',
+        description: 'Without exiting the vehicle, use the Roamer Mounted Cannon to attack a Sentinel drone patrol.',
+        completed: false,
+      },
+      {
+        step_number: 3,
+        title: 'Eliminate 6 Drones from the Cockpit',
+        description: 'Maneuver across sand dunes at speed while destroying 6 chasing Sentinel quad quadrupeds or flying drones.',
+        completed: false,
+      },
+      {
+        step_number: 4,
+        title: 'Execute 2,000u Full-Throttle Dash',
+        description: 'Hit turbo boost off dune crests and maintain top speed for 2,000u without stopping until pursuit resets.',
+        completed: false,
+      },
+    ],
+    bonusGoal: 'Achieve 4+ seconds of uninterrupted mid-air hang time off a cliff edge with the booster.',
+    reward: 'S-Class Exocraft Engine Module + 10x Pugneum cores',
+    createdAt: 1720001800000,
+  },
+  {
+    id: 'mis_exocraft_colossus_core',
+    protocol_id: 'EXO-02',
+    title: 'Iron Behemoth: Colossus Heavy Excavation',
+    category: 'exocraft_combat',
+    categoryName: 'Exocraft Combat & Vehicle Rallies',
+    categoryIcon: 'Car',
+    flavor_quote: 'The Colossus is a moving fortress. Crush through hazardous flora and mine planetary mineral deposits with industrial authority.',
+    targetLocation: 'Extreme Weather Planet (Radioactive or Toxic)',
+    lore: {
+      origin: 'Gek Industrial Heavy Hauler Blueprint',
+      headline: 'The Heavy Freighters of the Planetary Mantle',
+      narrative: 'When planetary storms melt exosuit hazard shields in seconds, only the armored bulkheads of a Colossus can withstand the corrosive acid rains. It tramples boulders and harvests core resources with unyielding mechanical patience.',
+      historicalContext: 'Gek Mining Cartel Operations',
+      canonEntity: 'Iteration Cronus'
+    },
+    steps: [
+      {
+        step_number: 1,
+        title: 'Deploy Colossus Heavy Vehicle',
+        description: 'Summon the Colossus onto an extreme radioactive or toxic planet during an active storm.',
+        completed: false,
+      },
+      {
+        step_number: 2,
+        title: 'Industrial Core Mining',
+        description: 'Use the Colossus Mining Laser to harvest 1,500 units of Activated Copper, Uranium, or Pure Ferrite.',
+        completed: false,
+      },
+      {
+        step_number: 3,
+        title: 'Crush 10 Hazardous Flora',
+        description: 'Drive directly over 10 Whip Vines or Gas Pods, crushing them beneath the heavy treads without taking suit damage.',
+        completed: false,
+      },
+      {
+        step_number: 4,
+        title: 'Construct Remote Mining Outpost',
+        description: 'Build a fortified shelter with an Exocraft summoning beacon and mineral storage depot.',
+        completed: false,
+      },
+    ],
+    bonusGoal: 'Completely fill the Colossus cargo inventory with refined ores and mineral commodities.',
+    reward: 'Industrial Trade Commodity crates + 1,000 Nanites',
+    createdAt: 1720001900000,
+  },
+  // 11. Galactic Faction Standings
+  {
+    id: 'mis_faction_vykeen_honor',
+    protocol_id: 'FACT-01',
+    title: 'Blood of Hirk: Vy\'keen Warrior Standing',
+    category: 'faction_standing',
+    categoryName: 'Galactic Faction Standings',
+    categoryIcon: 'Award',
+    flavor_quote: 'Prove your worth in the crucible of battle. Raise your standing with the Vy\'keen through blood, deeds, and sacred relics.',
+    targetLocation: 'Vy\'keen Star System (High Conflict)',
+    lore: {
+      origin: 'Vy\'keen Ancestral Honor Tablets',
+      headline: 'The Oaths of the Great Warrior',
+      narrative: 'The Vy\'keen respect only those who face the Sentinels without flinching. To rise in their clan ranks, a traveler must lay low enemy dreadnoughts and gift the daggers of their ancestors to station envoys.',
+      historicalContext: 'First War with the Aerons',
+      canonEntity: 'Weapons Specialist Hirk'
+    },
+    steps: [
+      {
+        step_number: 1,
+        title: 'Travel to a Vy\'keen Controlled System',
+        description: 'Warp to a 3-star high-conflict Vy\'keen system and verify your current standing in the Milestones menu.',
+        completed: false,
+      },
+      {
+        step_number: 2,
+        title: 'Complete 2 Mercenary Guild Missions',
+        description: 'Visit the Space Station Mission Board and complete 2 bounty or predator-cull contracts for the Vy\'keen.',
+        completed: false,
+      },
+      {
+        step_number: 3,
+        title: 'Gift 3 Vy\'keen Daggers to Warriors',
+        description: 'Speak with NPCs at trading outposts or stations and present 3 Vy\'keen Daggers or Effigies.',
+        completed: false,
+      },
+      {
+        step_number: 4,
+        title: 'Achieve +3 Vy\'keen Standing Milestone',
+        description: 'Elevate your reputation until your Vy\'keen Standing increases by at least 3 ranks (e.g. from Ally to Honoured).',
+        completed: false,
+      },
+    ],
+    bonusGoal: 'Destroy a Sentinel Capital Dreadnought in space battle within this Vy\'keen sector.',
+    reward: 'Vy\'keen High Command Standing, Dreadnought AI Fragment & S-Class Weapon Mod',
+    createdAt: 1720002000000,
+  },
+  {
+    id: 'mis_faction_korvax_convergence',
+    protocol_id: 'FACT-02',
+    title: 'Echo Resonance: Korvax Convergence Elevation',
+    category: 'faction_standing',
+    categoryName: 'Galactic Faction Standings',
+    categoryIcon: 'Award',
+    flavor_quote: 'Upload pure discovery telemetry to the Echoes. Elevate your standing with the Korvax Convergence.',
+    targetLocation: 'Korvax Controlled Scientific System',
+    lore: {
+      origin: 'Korvax Echo Shell Telemetry #101',
+      headline: 'The Communion of the Convergence',
+      narrative: 'Korvax entities welcome outsiders who expand the collective archive. Donating Korvax Casings and unravelling ancient planetary monolith riddles bonds the traveler into the sacred frequencies of the Convergence.',
+      historicalContext: 'The Great Disconnection & Recovery',
+      canonEntity: 'Priest Entity Nada'
+    },
+    steps: [
+      {
+        step_number: 1,
+        title: 'Warp to Korvax Scientific System',
+        description: 'Locate a Korvax system with Opulent or Wealthy economy on the Galaxy Map.',
+        completed: false,
+      },
+      {
+        step_number: 2,
+        title: 'Solve 2 Alien Monolith Enigmas',
+        description: 'Locate 2 ancient Korvax Monoliths and answer the riddle correctly to earn Convergence approval.',
+        completed: false,
+      },
+      {
+        step_number: 3,
+        title: 'Donate 3 Korvax Casings',
+        description: 'Present Korvax Casings to Research Entities on the space station or trading platforms.',
+        completed: false,
+      },
+      {
+        step_number: 4,
+        title: 'Achieve +3 Korvax Standing Milestone',
+        description: 'Verify your Milestones log confirms an increase of at least 3 ranks with the Korvax.',
+        completed: false,
+      },
+    ],
+    bonusGoal: 'Learn 10 new Korvax dialect words from Knowledge Stones on a single planet.',
+    reward: 'Korvax Convergence Endorsement, 1,000 Nanites & Exosuit Shield Blueprints',
+    createdAt: 1720002100000,
   },
 ];
 
@@ -1291,6 +1709,274 @@ function generateBaseMission(chosenCat: MissionCategory, targetBiome?: string, p
     };
   }
 
+  if (chosenCat === 'orbital_stellar') {
+    const orbitalVariants = [
+      {
+        title: 'Helios Crown: Stellar Orbit Waypoint',
+        loc: 'High Orbit / Stratosphere of Airless Moon',
+        quote: 'Anchor an observation platform in the upper atmosphere facing the primary star. The solar corona holds lost broadcast frequencies.',
+        task: 'Construct a high-altitude glass observation platform with solar panels and save beacon aligned with the system star',
+      },
+      {
+        title: 'Stellar Horizon: Planetary Ring Waypoint',
+        loc: 'Mountain Peak Intersecting Planetary Rings',
+        quote: 'Where the planet rings slice through the sky like silver razor wire, establish a communications beacon.',
+        task: 'Erect a vertical communications spire with a landing pad touching the planetary dust ring',
+      },
+      {
+        title: 'Solar Flare Outpost: Deep Orbit Watch',
+        loc: 'Sub-Orbital Ceiling (>1,200u Elevation)',
+        quote: 'Climb above cloud layers where the binary stars fill the horizon. Register an automated beacon for passing freighters.',
+        task: 'Place a Base Computer at the build height limit and establish a permanent fleet observation deck',
+      },
+    ];
+    const pick = orbitalVariants[Math.floor(Math.random() * orbitalVariants.length)];
+    return {
+      id: `mis_orbt_${Date.now()}_${protoNum}`,
+      protocol_id: `ORBT-${protoNum}`,
+      title: pick.title,
+      category: 'orbital_stellar',
+      categoryName: catMeta.name,
+      categoryIcon: catMeta.icon,
+      flavor_quote: pick.quote,
+      targetLocation: targetBiome || pick.loc,
+      steps: [
+        {
+          step_number: 1,
+          title: 'Ascend to Sub-Orbital Ceiling',
+          description: 'Use jetpack burst, terrain elevation, or high-altitude flight to reach upper atmospheric limits.',
+          completed: false,
+        },
+        {
+          step_number: 2,
+          title: 'Anchor Orbital Base Computer',
+          description: 'Place a Base Computer or Save Beacon to permanently register the sub-orbital sector.',
+          completed: false,
+        },
+        {
+          step_number: 3,
+          title: 'Construct Observation Station',
+          description: pick.task,
+          completed: false,
+        },
+        {
+          step_number: 4,
+          title: 'Calibrate Teleporter & Solar Grid',
+          description: 'Wire 4 Solar Panels, 2 Batteries, and a Base Teleport Module to finalize the orbital hub.',
+          completed: false,
+        },
+      ],
+      bonusGoal: 'Summon your Capital Freighter directly beneath the platform for a panoramic fleet view.',
+      reward: 'Permanent Orbital Waypoint Hub + 1,200 Nanite discovery bonus',
+      createdAt: Date.now(),
+    };
+  }
+
+  if (chosenCat === 'minotaur_purification') {
+    const minoVariants = [
+      {
+        title: 'Titan Purge: Vile Brood Extermination',
+        loc: 'Infested World with Vile Brood Nests',
+        quote: 'Mount the Minotaur mech. The soil shudders beneath heavy treads as titan tendrils erupt from the planetary crust.',
+        targetNests: 3,
+      },
+      {
+        title: 'Iron Vanguard: Sentinel Walker Showdown',
+        loc: 'Extreme Sentinel Security World',
+        quote: 'Engage the Minotaur autonomous AI pilot to fight alongside you against Level 5 Sentinel Walker forces.',
+        targetNests: 1,
+      },
+      {
+        title: 'Brood Mother Reckoning: Minotaur Mech Strike',
+        loc: 'Corrupted Bio-Hazard Moon',
+        quote: 'Exterminate subterranean worm clusters before the hive awakens. Heavy firepower authorized.',
+        targetNests: 4,
+      },
+    ];
+    const pick = minoVariants[Math.floor(Math.random() * minoVariants.length)];
+    return {
+      id: `mis_mino_${Date.now()}_${protoNum}`,
+      protocol_id: `MINO-${protoNum}`,
+      title: pick.title,
+      category: 'minotaur_purification',
+      categoryName: catMeta.name,
+      categoryIcon: catMeta.icon,
+      flavor_quote: pick.quote,
+      targetLocation: targetBiome || pick.loc,
+      steps: [
+        {
+          step_number: 1,
+          title: 'Touch Down on Infested World',
+          description: 'Scan system planets to locate biological corruption, purple tendril markers, or extreme sentinels.',
+          completed: false,
+        },
+        {
+          step_number: 2,
+          title: 'Deploy Minotaur Heavy Mech',
+          description: 'Summon the Minotaur Exocraft. Mount the controls or activate the Hardframe AI pilot module.',
+          completed: false,
+        },
+        {
+          step_number: 3,
+          title: `Purge ${pick.targetNests} Infested Worm Nests`,
+          description: `Fire the Minotaur Cannon or Bore to exterminate ${pick.targetNests} Vile Brood nests and crush crawling grubs.`,
+          completed: false,
+        },
+        {
+          step_number: 4,
+          title: 'Harvest Vile Flesh & Cursed Dust',
+          description: 'Collect 250+ Vile Flesh or Cursed Dust dropped from the defeated titan biological horrors.',
+          completed: false,
+        },
+      ],
+      bonusGoal: 'Complete the purification exclusively from within the Minotaur cockpit without exiting on foot.',
+      reward: 'Vy\'keen Warrior Honor + 1,200 Nanites + Bio-Hazard Purification Medal',
+      createdAt: Date.now(),
+    };
+  }
+
+  if (chosenCat === 'exocraft_combat') {
+    const exoVariants = [
+      {
+        title: 'Dust & Fury: Roamer Pursuit Trial',
+        loc: 'Scorched Dune / Arid Desert World',
+        quote: 'Foot travel prohibited. Mount the Roamer rover, lock the mounted laser, and outrun the interceptor drones.',
+        vehicle: 'Roamer',
+      },
+      {
+        title: 'Iron Behemoth: Colossus Heavy Excavation',
+        loc: 'Extreme Radioactive World with Acid Storms',
+        quote: 'The Colossus is an armored fortress. Crush hazardous flora and extract deep mineral nodes.',
+        vehicle: 'Colossus',
+      },
+      {
+        title: 'Wave Skimmer: Nomad Trench Run',
+        loc: 'Tropical Ocean Island Archipelago',
+        quote: 'Hover over ocean waves at turbo velocity in the Nomad hovercraft, surveying coastal anomalies.',
+        vehicle: 'Nomad',
+      },
+      {
+        title: 'Pilgrim Drift: Extreme Planetary Circuit',
+        loc: 'Craggy Mountain Ridge Moon',
+        quote: 'Hit top speed on two wheels. Drift across planetary craters and survive extreme gravity drop-offs.',
+        vehicle: 'Pilgrim',
+      },
+    ];
+    const pick = exoVariants[Math.floor(Math.random() * exoVariants.length)];
+    return {
+      id: `mis_exo_${Date.now()}_${protoNum}`,
+      protocol_id: `EXO-${protoNum}`,
+      title: pick.title,
+      category: 'exocraft_combat',
+      categoryName: catMeta.name,
+      categoryIcon: catMeta.icon,
+      flavor_quote: pick.quote,
+      targetLocation: targetBiome || pick.loc,
+      steps: [
+        {
+          step_number: 1,
+          title: `Deploy ${pick.vehicle} Exocraft`,
+          description: `Construct a Geobay or summon the ${pick.vehicle} via Exocraft Summoning Station on the designated planet.`,
+          completed: false,
+        },
+        {
+          step_number: 2,
+          title: 'Vehicle-Restricted Task',
+          description: `Remain inside the ${pick.vehicle} cockpit and utilize its mounted cannons or mining laser for all actions.`,
+          completed: false,
+        },
+        {
+          step_number: 3,
+          title: 'Combat / Resource Objective',
+          description: `Neutralize 6 Sentinel drones or mine 1,000 units of planetary minerals exclusively with the ${pick.vehicle}.`,
+          completed: false,
+        },
+        {
+          step_number: 4,
+          title: 'Complete 2,500u Full-Throttle Dash',
+          description: 'Engage turbo boost across terrain ridges for 2,500u until the sector challenge is conquered.',
+          completed: false,
+        },
+      ],
+      bonusGoal: 'Achieve 4+ seconds of mid-air hang time jumping off a planetary canyon or cliff edge.',
+      reward: 'S-Class Exocraft Upgrade Module + 1,000 Nanites',
+      createdAt: Date.now(),
+    };
+  }
+
+  if (chosenCat === 'faction_standing') {
+    const factions = [
+      {
+        race: 'Vy\'keen',
+        title: 'Blood of Hirk: Vy\'keen Clan Elevation',
+        loc: 'Vy\'keen High-Conflict System',
+        quote: 'Prove your worth in the crucible of battle. Raise your standing with the Vy\'keen through blood and deeds.',
+        relic: 'Vy\'keen Dagger or Effigy',
+      },
+      {
+        race: 'Korvax',
+        title: 'Echo Resonance: Korvax Convergence Elevation',
+        loc: 'Korvax Scientific System',
+        quote: 'Upload pure discovery telemetry to the Echoes. Elevate your standing with the Korvax Convergence.',
+        relic: 'Korvax Casing',
+      },
+      {
+        race: 'Gek',
+        title: 'First Spawn Commerce: Gek Trade Syndicate Standing',
+        loc: 'Gek Mercantile High-Wealth System',
+        quote: 'Accumulate wealth, negotiate trade agreements, and gift relics to Gek trade lords for syndicate favor.',
+        relic: 'Gek Relic or GekNip',
+      },
+      {
+        race: 'Outlaw / Mercenaries',
+        title: 'Corsair Concord: Outlaw Guild Standing',
+        loc: 'Pirate Controlled Outlaw System',
+        quote: 'Complete illicit contraband bounties and build your reputation among pirate space stations.',
+        relic: 'Forged Passport',
+      },
+    ];
+    const pick = factions[Math.floor(Math.random() * factions.length)];
+    return {
+      id: `mis_fact_${Date.now()}_${protoNum}`,
+      protocol_id: `FACT-${protoNum}`,
+      title: pick.title,
+      category: 'faction_standing',
+      categoryName: catMeta.name,
+      categoryIcon: catMeta.icon,
+      flavor_quote: pick.quote,
+      targetLocation: targetBiome || pick.loc,
+      steps: [
+        {
+          step_number: 1,
+          title: `Warp to a ${pick.race} Sector`,
+          description: `Locate a star system controlled by ${pick.race} and check your current standing in the Milestones log.`,
+          completed: false,
+        },
+        {
+          step_number: 2,
+          title: 'Complete 2 Guild Mission Contracts',
+          description: 'Visit the Space Station Mission Board and complete 2 faction-aligned missions.',
+          completed: false,
+        },
+        {
+          step_number: 3,
+          title: `Present 3 ${pick.relic} Offerings`,
+          description: `Speak with 3 separate NPCs at trading posts or stations and gift them a ${pick.relic}.`,
+          completed: false,
+        },
+        {
+          step_number: 4,
+          title: `Achieve +3 ${pick.race} Standing Milestone`,
+          description: `Raise your standing milestone rank with ${pick.race} by at least 3 levels.`,
+          completed: false,
+        },
+      ],
+      bonusGoal: `Neutralize a pirate bounty hunter or Sentinel dreadnought within this ${pick.race} system.`,
+      reward: `${pick.race} High Standing Endorsement + Faction Guild Tokens + 1,200 Nanites`,
+      createdAt: Date.now(),
+    };
+  }
+
   // Planet Explorer default
   const planetTypes = [
     { name: 'Bioluminescent Chameleon Paradise', task: 'Build a scenic glass viewing platform overlooking glowing fields' },
@@ -1343,6 +2029,150 @@ function generateBaseMission(chosenCat: MissionCategory, targetBiome?: string, p
 }
 
 // Procedural Lore and 3-Thematic-Paths Generator
+// Helper to create tailored Photo Mode objectives
+export function generatePhotoGoal(
+  categories: MissionCategory[],
+  targetBiome: string = "Designated Sector",
+  pathId: string = "alpha"
+): { title: string; targetSubject: string; description: string; bonusNanites: number } {
+  const hasOrbital = categories.includes("orbital_stellar");
+  const hasMinotaur = categories.includes("minotaur_purification");
+  const hasExocraft = categories.includes("exocraft_combat");
+  const hasFaction = categories.includes("faction_standing");
+  const hasFishing = categories.includes("aquarius_fishing");
+  const hasDerelict = categories.includes("derelict_freighter");
+  const hasFauna = categories.includes("xeno_companion");
+  const hasSpace = categories.includes("space_salvage");
+
+  if (hasOrbital) {
+    if (pathId === "alpha") {
+      return {
+        title: "Sub-Orbital Stellar Corona Alignment",
+        targetSubject: "Solar Flare & High-Altitude Horizon",
+        description: "Open Photo Mode at the atmospheric ceiling (>1,000u) to frame your observation rotunda against the solar corona and planetary curvature.",
+        bonusNanites: 600,
+      };
+    } else if (pathId === "beta") {
+      return {
+        title: "Planetary Ring Dust Intersection",
+        targetSubject: "Mountain Spire & Planetary Rings",
+        description: "Capture the dramatic silver dust plane of the rings slicing directly through your mountain communications spire.",
+        bonusNanites: 500,
+      };
+    } else {
+      return {
+        title: "Capital Fleet Zenith Formation",
+        targetSubject: "Capital Dreadnought & Frigate Escorts",
+        description: "Frame your capital starship hovering in low planetary orbit beneath your glass viewing deck during golden dusk.",
+        bonusNanites: 750,
+      };
+    }
+  }
+
+  if (hasMinotaur) {
+    if (pathId === "alpha") {
+      return {
+        title: "Titan Worm Eruption Snapshot",
+        targetSubject: "Colossal Titan Worm & Heavy Mech Cannon",
+        description: "Time an action photo just as a massive Vile Brood titan bursts from the planetary crust with your Minotaur in the foreground.",
+        bonusNanites: 750,
+      };
+    } else if (pathId === "beta") {
+      return {
+        title: "Mechanical Vanguard Duel",
+        targetSubject: "Sentinel Walker & Autonomous Minotaur",
+        description: "Snap a high-stakes combat photo of your Hardframe Minotaur trading laser fire with a towering Sentinel Walker.",
+        bonusNanites: 700,
+      };
+    } else {
+      return {
+        title: "Quarantine Crater Panorama",
+        targetSubject: "Cleansed Brood Nest & Bio-Lab Outpost",
+        description: "Capture the fortified containment facility built over the smoking craters of the purged titan nest.",
+        bonusNanites: 500,
+      };
+    }
+  }
+
+  if (hasExocraft) {
+    if (pathId === "alpha") {
+      return {
+        title: "Canyon Stunt Hang-Time",
+        targetSubject: "Exocraft Mid-Air Jump & Dune Ridge",
+        description: "Trigger Photo Mode mid-flight while boosting off an extreme cliff edge with terrain receding beneath wheels.",
+        bonusNanites: 600,
+      };
+    } else if (pathId === "beta") {
+      return {
+        title: "Colossus Acid Storm Fortress",
+        targetSubject: "Armored Colossus & Toxic Lightning",
+        description: "Photograph the massive Colossus plowing through hazardous flora amidst a blinding radioactive or toxic squall.",
+        bonusNanites: 550,
+      };
+    } else {
+      return {
+        title: "Nomad Ocean Skim Crest",
+        targetSubject: "Hovercraft Wake & Tropical Sunset",
+        description: "Capture the Nomad skimming open water at top speed with white water rooster-tails reflecting the setting sun.",
+        bonusNanites: 500,
+      };
+    }
+  }
+
+  if (hasFaction) {
+    return {
+      title: "Galactic Envoy Audience",
+      targetSubject: "Alien Monolith or Space Station Core",
+      description: "Frame an impressive portrait of your traveler presenting relics before an ancient Monolith or station guild dais.",
+      bonusNanites: 500,
+    };
+  }
+
+  if (hasFishing) {
+    return {
+      title: "Abyssal Tempest Leviathan",
+      targetSubject: "Exo-Skiff & Monster Fish Breach",
+      description: "Use Photo Mode during a raging ocean storm while reeling in a rare deep-sea fish from your floating skiff.",
+      bonusNanites: 650,
+    };
+  }
+
+  if (hasDerelict) {
+    return {
+      title: "Ghost Ship Cold Chamber",
+      targetSubject: "Derelict Airlock & Void Vacuum",
+      description: "Capture the eerie blue glow of emergency heaters cutting through freezing derelict corridors and alien tendrils.",
+      bonusNanites: 600,
+    };
+  }
+
+  if (hasFauna) {
+    return {
+      title: "Megafauna Steed Vista",
+      targetSubject: "Colossal Companion Mount & Planetary Rings",
+      description: "Pose atop your tamed gigantic companion mount against glowing alien flora or dramatic mountain ridges.",
+      bonusNanites: 550,
+    };
+  }
+
+  if (hasSpace) {
+    return {
+      title: "Deep Space Dogfight Vapor Trails",
+      targetSubject: "Hostile Pirate Fighter Explosion",
+      description: "Freeze combat mid-burst as an enemy corsair starship breaks apart amidst asteroid mineral belts.",
+      bonusNanites: 700,
+    };
+  }
+
+  // Default explorer photo
+  return {
+    title: "Planetary Horizon Wonder",
+    targetSubject: "Scenic Vista & Starship Touchdown",
+    description: `Compose a scenic panoramic photograph on ${targetBiome} featuring strange flora, glowing skies, and your parked starship.`,
+    bonusNanites: 500,
+  };
+}
+
 export function buildLoreAndPaths(
   selectedCategories: MissionCategory[],
   targetBiome: string = 'The Designated Sector',
@@ -1350,6 +2180,7 @@ export function buildLoreAndPaths(
 ): {
   lore: MissionLore;
   paths: MissionPath[];
+  photoGoal: { title: string; targetSubject: string; description: string; bonusNanites: number };
   hybridTitle: string;
   hybridQuote: string;
   categoryNames: string[];
@@ -1366,10 +2197,26 @@ export function buildLoreAndPaths(
   const hasSpaceSalvage = selectedCategories.includes('space_salvage');
   const hasFauna = selectedCategories.includes('xeno_companion');
   const hasExpedition = selectedCategories.includes('planet_expedition') || selectedCategories.includes('classic_expedition');
+  const hasOrbital = selectedCategories.includes('orbital_stellar');
+  const hasMinotaur = selectedCategories.includes('minotaur_purification');
+  const hasExocraft = selectedCategories.includes('exocraft_combat');
+  const hasFaction = selectedCategories.includes('faction_standing');
 
   // Hybrid Title synthesis
   let hybridTitle = `Hybrid Protocol: ${catMetas.map((m) => m.name.split(' ')[0]).join(' × ')}`;
-  if (hasCulinary && hasDerelict) {
+  if (hasOrbital && hasSpaceSalvage) {
+    hybridTitle = 'Orbital Colossus: Star-Orbit Relay & Deep Space Salvage';
+  } else if (hasMinotaur && hasPlanetSalvage) {
+    hybridTitle = 'Mech Purifier: Titan Worm Cleansing & Crashed Starship Recovery';
+  } else if (hasExocraft && hasMinotaur) {
+    hybridTitle = 'Titan Vanguard: Combined Armored Mech & Exocraft Assault';
+  } else if (hasOrbital && hasCulinary) {
+    hybridTitle = 'Stellar Hearth: Sub-Orbital Star-Gazer Sky Bistro';
+  } else if (hasExocraft && hasFaction) {
+    hybridTitle = 'Outlaw Rally: Planetary Exocraft Trial & Guild Reputation';
+  } else if (hasMinotaur && hasFaction) {
+    hybridTitle = 'Vy\'keen Crucible: Minotaur Wurm Extermination & Clan Honor';
+  } else if (hasCulinary && hasDerelict) {
     hybridTitle = 'The Ghost Galley: Derelict Salvage & Void Hearth';
   } else if (hasCulinary && hasFishing) {
     hybridTitle = 'The Abyssal Feast: Deep Trench Skiff & Coral Bistro';
@@ -1394,7 +2241,35 @@ export function buildLoreAndPaths(
   let loreNarrative =
     'Planetary surveys in this sector indicate multiple overlapping signatures left by a legendary star-caravan. Explorers of old did not specialize in a single craft; they salvaged fallen hulls from orbit, tamed indigenous beasts for planetary traverses, and erected warm dining hearths upon volcanic ledges to sustain their fleet.';
 
-  if (hasDerelict) {
+  if (hasOrbital) {
+    loreOrigin = 'Sub-Stellar Telemetry Core: Cosmos Frequency #16';
+    loreHeadline = 'The Guardians of the Solar Crown';
+    loreContext = 'Cosmos Era Orbital Observation';
+    loreEntity = 'Priest Entity Nada & Specialist Polo';
+    loreNarrative =
+      'Before the great collapse, the First Convergence anchored orbital waypoints above world atmospheres to chart stellar pulses. By building observation relays in high orbit facing the solar crown, Travelers reopen frequencies lost to the Crimson Eye.';
+  } else if (hasMinotaur) {
+    loreOrigin = 'Vy\'keen Warrior Codex: Trial of the Wurm';
+    loreHeadline = 'The Purge of the Crawling Dark';
+    loreContext = 'Vile Brood Infestation Wars';
+    loreEntity = 'Weapons Specialist Hirk';
+    loreNarrative =
+      'Where biological corruption takes root, Vile Brood worms burrow beneath planetary mantles to poison planetary cores. Only heavily armored Minotaur walkers possess the thermal artillery to cleanse these subterranean hives and extract sacred cursed dust.';
+  } else if (hasExocraft) {
+    loreOrigin = 'Pilgrim Outlaw Circuit Log #77';
+    loreHeadline = 'The Dune Drifters of the Scorched Waste';
+    loreContext = 'Outlaw Rover Smuggling Era';
+    loreEntity = 'Exocraft Specialist Radu';
+    loreNarrative =
+      'Planetary outlaws resolved disputes not with starships, but with high-speed exocraft dashes across hostile terrain. To touch ground on foot was considered weakness; true mastery demanded conquering alien biomes exclusively from the vehicle cockpit.';
+  } else if (hasFaction) {
+    loreOrigin = 'Galactic Guild High Commission Protocol';
+    loreHeadline = 'The Test of Clan Endorsement';
+    loreContext = 'Post-Sentinel Galactic Diplomacy';
+    loreEntity = 'Guild Envoy Gek-Nid & Warrior Nal';
+    loreNarrative =
+      'Star systems do not reveal their richest secrets to strangers. By completing high-tier contracts, offering sacred daggers or casings, and proving unshakeable allegiance, a Traveler commands the true respect of the galactic races.';
+  } else if (hasDerelict) {
     loreOrigin = 'Derelict Log Transceiver: Emergency Sub-Beacon';
     loreHeadline = 'The Ghost Carrier of the Outer Rim';
     loreContext = 'Pre-Collapse Gek Merchant Guild Transit';
@@ -1424,123 +2299,544 @@ export function buildLoreAndPaths(
       'Far from continental shores, beneath heavy planetary cloud cover, ancient aquatic behemoths swim through underwater caverns. Interlopers equipped with automated Exo-Skiffs and deep-sea lures can pull relics and delicacies from depths untouched by Sentinel patrols.';
   }
 
-  // 3 Distinct Thematic Paths
-  const paths: MissionPath[] = [
-    {
-      path_id: 'alpha',
-      themeTitle: 'Path Alpha: Kinetic Reclamation',
-      approach: 'Direct assault, industrial demolition & high-yield scrap extraction',
-      description:
-        'Prioritize raw power, plasma torches, and heavy salvage. Cut into sealed airlocks, extract heavy freighter bulkheads, and recover high-grade starship tech.',
-      tacticalAdvantage:
-        'Maximizes Salvaged Frigate Modules, Storage Augmentations, and Tainted Metal yield.',
-      steps: [
-        {
-          step_number: 1,
-          title: 'Deploy Heavy Cutting Torches',
-          description: `Navigate to ${targetBiome} and blast open pressurized security seals or crashed starship cockpit canopies.`,
-          completed: false,
-        },
-        {
-          step_number: 2,
-          title: 'Extract Core Industrial Machinery',
-          description:
-            'Recover 3 high-value components: an Inverted Mirror, Freighter Hyperdrive Core, or Walker Brain.',
-          completed: false,
-        },
-        {
-          step_number: 3,
-          title: 'Dismantle Defense Grid / Sentinel Turrets',
-          description:
-            'Neutralize automated security drones, derelict security turrets, or territorial planetary sentinels.',
-          completed: false,
-        },
-        {
-          step_number: 4,
-          title: 'Claim Heavy Engineering Terminal',
-          description:
-            'Jack into the primary engineering mainframe to download blueprint schematics and extract tainted metal.',
-          completed: false,
-        },
-      ],
-    },
-    {
-      path_id: 'beta',
-      themeTitle: 'Path Beta: Harmonic Hearth',
-      approach: 'Ecological foraging, Nutrient Processing & hospitable outpost construction',
-      description:
-        'Emphasize harmony with the planet. Harvest wild grains, milk gentle herbivore fauna, prepare a signature multi-course meal in the Nutrient Processor, and build a scenic resting lounge.',
-      tacticalAdvantage:
-        'Earns massive praise and Nanite payouts from Iteration Cronus at the Space Anomaly + companion trust bonuses.',
-      steps: [
-        {
-          step_number: 1,
-          title: 'Forage Native Flora & Creature Provisions',
-          description: `Scout ${targetBiome} for wild Wheat, Star Bramble, or Sweetroot, and feed local wild fauna to harvest Creature Milk.`,
-          completed: false,
-        },
-        {
-          step_number: 2,
-          title: 'Construct Scenic Outpost / Dining Counter',
-          description:
-            'Erect a welcoming shelter featuring a serving counter, stools, and an indoor Nutrient Processor kitchen island.',
-          completed: false,
-        },
-        {
-          step_number: 3,
-          title: 'Cook a 2-Course Specialty Feast',
-          description:
-            'Use the Nutrient Processor to churn butter, mill flour, and bake Lumpen Doughnuts, Stellar Custard, or Abyssal Chowder.',
-          completed: false,
-        },
-        {
-          step_number: 4,
-          title: 'Deliver Feast to Iteration Cronus',
-          description:
-            'Board the Space Anomaly and present your freshly cooked specialty dish to Iteration Cronus for culinary critique.',
-          completed: false,
-        },
-      ],
-    },
-    {
-      path_id: 'gamma',
-      themeTitle: 'Path Gamma: Astral Cartography',
-      approach: 'Vantage point scouting, stealth telemetry & permanent waypoint beacons',
-      description:
-        'Operate as an explorer and cartographer. Scale the highest mountain peak or anchor an Exo-Skiff in open water, triangulate anomaly signals, and register a permanent galactic waypoint.',
-      tacticalAdvantage:
-        'Unlocks planetary portal glyph sequences, system trade route maps, and discovery milestone bonuses.',
-      steps: [
-        {
-          step_number: 1,
-          title: 'Ascend to Strategic Vantage Vista',
-          description: `Locate a dramatic cliff, floating island, or deep sea trench on ${targetBiome}.`,
-          completed: false,
-        },
-        {
-          step_number: 2,
-          title: 'Deploy Save Beacon & Triangulation Sensor',
-          description:
-            'Place a Save Beacon or Base Computer to claim the sector and triangulate anomalous radio frequencies.',
-          completed: false,
-        },
-        {
-          step_number: 3,
-          title: 'Scan 6 Undiscovered Biological Wonders',
-          description:
-            'Use the Analysis Visor to document native creatures, mineral formations, and ancient floral specimens.',
-          completed: false,
-        },
-        {
-          step_number: 4,
-          title: 'Transmit Coordinates via Planetary Portal',
-          description:
-            'Locate a Planetary Monolith or Portal structure and input your discovery coordinates into the galactic network.',
-          completed: false,
-        },
-      ],
-    },
-  ];
+  // 3 Distinct Thematic Paths tailored to active styles
+  let paths: MissionPath[] = [];
+
+  if (hasOrbital) {
+    paths = [
+      {
+        path_id: 'alpha',
+        themeTitle: 'Path Alpha: Sub-Orbital Zenith Rig',
+        approach: 'High-altitude engineering, solar observation rotunda & star flare monitoring',
+        description: 'Ascend to the atmosphere limit, anchor a stellar base computer, and wire solar panels aligned with the star.',
+        tacticalAdvantage: 'Unlocks panoramic orbital skyports, stellar telemetry arrays, and 1,200 Nanites.',
+        steps: [
+          {
+            step_number: 1,
+            title: 'Reach Atmospheric Ceiling',
+            description: `Ascend to maximum build limit (>1,000u) overlooking the horizon on ${targetBiome}.`,
+            completed: false,
+          },
+          {
+            step_number: 2,
+            title: 'Anchor High-Altitude Base Computer',
+            description: 'Claim the orbital waypoint sector and deploy an automated Save Beacon.',
+            completed: false,
+          },
+          {
+            step_number: 3,
+            title: 'Construct Solar Observation Deck',
+            description: 'Build a glass observation lounge with 4 Solar Panels wired to the system star.',
+            completed: false,
+          },
+          {
+            step_number: 4,
+            title: 'Link Teleport Relay',
+            description: 'Power a Base Teleport Module to link the high-orbit waypoint to your galactic network.',
+            completed: false,
+          },
+        ],
+      },
+      {
+        path_id: 'beta',
+        themeTitle: 'Path Beta: Planetary Ring Waypoint',
+        approach: 'Intersection spire scouting & communications beacon broadcast',
+        description: 'Scale a mountain peak that aligns with planetary dust rings and erect a navigational beacon spire.',
+        tacticalAdvantage: 'Provides interplanetary trade route telemetry and emergency signal frequencies.',
+        steps: [
+          {
+            step_number: 1,
+            title: 'Locate Ring Alignment Peak',
+            description: `Identify a high mountain ridge that touches or aligns with the dust plane on ${targetBiome}.`,
+            completed: false,
+          },
+          {
+            step_number: 2,
+            title: 'Deploy Long-Range Signal Booster',
+            description: 'Place an emergency beacon or signal booster directly along the ring plane trajectory.',
+            completed: false,
+          },
+          {
+            step_number: 3,
+            title: 'Build Ring-Watch Spire',
+            description: 'Construct a vertical cylindrical spire topped with a starship landing pad.',
+            completed: false,
+          },
+          {
+            step_number: 4,
+            title: 'Transmit Galactic Waypoint',
+            description: 'Tag coordinates in your Discovery log to permanently register the navigational beacon.',
+            completed: false,
+          },
+        ],
+      },
+      {
+        path_id: 'gamma',
+        themeTitle: 'Path Gamma: Deep Space Fleet Anchor',
+        approach: 'Capital freighter positioning & sub-space orbital fleet review',
+        description: 'Summon your Capital Freighter directly under the orbital platform and calibrate system fleet frigates.',
+        tacticalAdvantage: 'Earns Salvaged Frigate Modules and fleet expedition coordination buffs.',
+        steps: [
+          {
+            step_number: 1,
+            title: 'Summon Capital Dreadnought',
+            description: 'Call your Capital Freighter into low planetary orbit beneath your orbital platform.',
+            completed: false,
+          },
+          {
+            step_number: 2,
+            title: 'Board & Inspect Fleet Command Room',
+            description: 'Access the Bridge terminal and inspect your frigate squadron alignment.',
+            completed: false,
+          },
+          {
+            step_number: 3,
+            title: 'Deploy Deep Space Frigate Expedition',
+            description: 'Launch an industrial or exploration frigate expedition from the Fleet Navigator.',
+            completed: false,
+          },
+          {
+            step_number: 4,
+            title: 'Photograph Fleet Horizon',
+            description: 'Use Photo Mode from your orbital deck to capture your capital ship framed against the system star.',
+            completed: false,
+          },
+        ],
+      },
+    ];
+  } else if (hasMinotaur) {
+    paths = [
+      {
+        path_id: 'alpha',
+        themeTitle: 'Path Alpha: Titan Wurm Eradication',
+        approach: 'Cockpit-locked heavy Minotaur cannon purge of Vile Brood nests',
+        description: 'Pilot the Minotaur mech directly into infested planetary crust and obliterate 3 titan worm nests.',
+        tacticalAdvantage: 'Extracts Vile Flesh, Cursed Dust, and massive Vy\'keen warrior commendations.',
+        steps: [
+          {
+            step_number: 1,
+            title: 'Deploy Minotaur Heavy Mech',
+            description: `Summon your Minotaur Exocraft onto infested terrain in ${targetBiome}.`,
+            completed: false,
+          },
+          {
+            step_number: 2,
+            title: 'Target Titan Worm Nests',
+            description: 'Use the Minotaur Cannon or Bore to shatter 3 writhing Vile Brood hives.',
+            completed: false,
+          },
+          {
+            step_number: 3,
+            title: 'Crush Crawling Brood Grubs',
+            description: 'Eliminate all spawned infested grubs and tendrils with heavy mech stomps.',
+            completed: false,
+          },
+          {
+            step_number: 4,
+            title: 'Harvest Biological Trophies',
+            description: 'Collect 250+ Vile Flesh or Cursed Dust dropped from the defeated titan horrors.',
+            completed: false,
+          },
+        ],
+      },
+      {
+        path_id: 'beta',
+        themeTitle: 'Path Beta: Autonomous Hardframe AI Vanguard',
+        approach: 'Coordinated tandem assault with autonomous Minotaur AI bodyguard',
+        description: 'Activate the Minotaur AI pilot module to fight shoulder-to-shoulder against high-alert Sentinel forces.',
+        tacticalAdvantage: 'High survivability during Wave 5 battles + pristine Sentinel Walker Brain harvest.',
+        steps: [
+          {
+            step_number: 1,
+            title: 'Engage Minotaur AI Protocol',
+            description: 'Summon the Minotaur and toggle its autonomous AI pilot to follow and protect you.',
+            completed: false,
+          },
+          {
+            step_number: 2,
+            title: 'Provoke High-Security Sentinels',
+            description: 'Trigger Sentinel alerts until heavy armored quads and mechs enter the battle zone.',
+            completed: false,
+          },
+          {
+            step_number: 3,
+            title: 'Defeat Sentinel Walker',
+            description: 'Coordinate fire with your Minotaur to shatter the Walker\'s leg armor and head chassis.',
+            completed: false,
+          },
+          {
+            step_number: 4,
+            title: 'Claim Pristine Walker Brain',
+            description: 'Loot the fallen mechanical titan for an intact Walker Brain and Hardframe salvage.',
+            completed: false,
+          },
+        ],
+      },
+      {
+        path_id: 'gamma',
+        themeTitle: 'Path Gamma: Subterranean Bio-Containment',
+        approach: 'Quarantine outpost construction & toxic core sealing',
+        description: 'Erect an armored bio-containment outpost over cleansed infested craters to prevent brood re-emergence.',
+        tacticalAdvantage: 'Generates automated biological specimen yields and discovery milestones.',
+        steps: [
+          {
+            step_number: 1,
+            title: 'Excavate Cleansed Nest Crater',
+            description: 'Use the Minotaur Bore to carve a perimeter trench around the neutralized nest.',
+            completed: false,
+          },
+          {
+            step_number: 2,
+            title: 'Deploy Quarantine Base Unit',
+            description: 'Place a Base Computer and build reinforced metal or alloy containment walls.',
+            completed: false,
+          },
+          {
+            step_number: 3,
+            title: 'Install Bio-Hazard Lab',
+            description: 'Place an Exocraft summoning bay and scientific terminal inside the shelter.',
+            completed: false,
+          },
+          {
+            step_number: 4,
+            title: 'Register Cleansed Sector',
+            description: 'Upload the planetary base to the teleporter network as an official Purged Outpost.',
+            completed: false,
+          },
+        ],
+      },
+    ];
+  } else if (hasExocraft) {
+    paths = [
+      {
+        path_id: 'alpha',
+        themeTitle: 'Path Alpha: High-Speed Vehicle Blitz',
+        approach: 'Cockpit-locked speed dash & vehicle mounted cannon engagements',
+        description: 'Mount the Roamer or Pilgrim and clear sector objectives without your boots touching alien soil.',
+        tacticalAdvantage: 'S-Class Exocraft Engine Modules, Pugneum crates, and hazard immunity.',
+        steps: [
+          {
+            step_number: 1,
+            title: 'Summon High-Speed Exocraft',
+            description: `Deploy a Roamer or Pilgrim geobay on the rugged terrain of ${targetBiome}.`,
+            completed: false,
+          },
+          {
+            step_number: 2,
+            title: 'Cockpit-Only Combat Trial',
+            description: 'Without dismounting, use mounted vehicle cannons to neutralize 6 hostile drones or predators.',
+            completed: false,
+          },
+          {
+            step_number: 3,
+            title: 'Execute 2,000u Full-Throttle Dash',
+            description: 'Hold turbo boost across hills and dunes for 2,000u without stopping.',
+            completed: false,
+          },
+          {
+            step_number: 4,
+            title: 'Crater Rim Stunt Jump',
+            description: 'Launch off a mountain cliff or crater ridge for at least 3 seconds of sustained air time.',
+            completed: false,
+          },
+        ],
+      },
+      {
+        path_id: 'beta',
+        themeTitle: 'Path Beta: Colossus Heavy Fortress',
+        approach: 'Industrial heavy mining, hazard crushing & mobile refinery',
+        description: 'Roll the colossal armored hauler into extreme weather storms and extract planetary mineral nodes.',
+        tacticalAdvantage: 'Maximizes Activated Copper, Uranium, and trade commodity storage.',
+        steps: [
+          {
+            step_number: 1,
+            title: 'Deploy Colossus Heavy Vehicle',
+            description: 'Summon the Colossus onto an extreme storm planet.',
+            completed: false,
+          },
+          {
+            step_number: 2,
+            title: 'Mine 1,500 Ore Nodes',
+            description: 'Use the Colossus Mining Laser to harvest 1,500 mineral ores directly into vehicle storage.',
+            completed: false,
+          },
+          {
+            step_number: 3,
+            title: 'Crush 10 Hazardous Plants',
+            description: 'Drive over 10 Whip Vines or Gas Pods, flattening them beneath the heavy treads.',
+            completed: false,
+          },
+          {
+            step_number: 4,
+            title: 'Anchor Heavy Cargo Depot',
+            description: 'Build a fortified shelter with vehicle geobays and mineral supply pipes.',
+            completed: false,
+          },
+        ],
+      },
+      {
+        path_id: 'gamma',
+        themeTitle: 'Path Gamma: Nomad Hydro-Rally',
+        approach: 'Water-skimming hovercraft survey across coastal trenches',
+        description: 'Hover at high speed across open oceans and island archipelagos in the Nomad hovercraft.',
+        tacticalAdvantage: 'Unlocks coastal waypoints and aquatic cartography data.',
+        steps: [
+          {
+            step_number: 1,
+            title: 'Deploy Nomad Hovercraft',
+            description: 'Summon the Nomad onto the shoreline of an oceanic planet.',
+            completed: false,
+          },
+          {
+            step_number: 2,
+            title: 'Skim Ocean Waves for 3,000u',
+            description: 'Glide across deep ocean water at maximum speed without sinking or dismounting.',
+            completed: false,
+          },
+          {
+            step_number: 3,
+            title: 'Island-Hop Waypoint Tagging',
+            description: 'Land the hovercraft on 3 separate offshore islands and scan native flora.',
+            completed: false,
+          },
+          {
+            step_number: 4,
+            title: 'Build Floating Hover Pier',
+            description: 'Drop a Base Computer on an oceanic rock and build a scenic wooden jetty for your Nomad.',
+            completed: false,
+          },
+        ],
+      },
+    ];
+  } else if (hasFaction) {
+    paths = [
+      {
+        path_id: 'alpha',
+        themeTitle: 'Path Alpha: Warrior Contract Crucible',
+        approach: 'High-tier bounty hunting & mercenary guild mission completion',
+        description: 'Take on high-tier combat contracts from the Space Station Mission Board to boost guild standing.',
+        tacticalAdvantage: 'Earns Faction High Command Endorsements, S-Class upgrades, and standing boosts.',
+        steps: [
+          {
+            step_number: 1,
+            title: 'Accept 2 Space Station Contracts',
+            description: 'Dock at the system space station and accept 2 high-level guild contracts.',
+            completed: false,
+          },
+          {
+            step_number: 2,
+            title: 'Execute Bounty Targets',
+            description: 'Hunt down rogue pirates in space or cull hostile planetary predators as contracted.',
+            completed: false,
+          },
+          {
+            step_number: 3,
+            title: 'Turn In Completed Contracts',
+            description: 'Return to the Mission Envoy to cash in rewards and claim reputation milestones.',
+            completed: false,
+          },
+          {
+            step_number: 4,
+            title: 'Achieve +3 Standing Milestone',
+            description: 'Verify your Milestone log registers an increase of 3 standing ranks with the controlling race.',
+            completed: false,
+          },
+        ],
+      },
+      {
+        path_id: 'beta',
+        themeTitle: 'Path Beta: Sacred Relic Diplomacy',
+        approach: 'Gift offerings, cultural dialect immersion & elder respect',
+        description: 'Present sacred relics (daggers, casings, or effigies) to station inhabitants and learn ancient dialects.',
+        tacticalAdvantage: 'Fastest route to top-tier faction standing without engaging in combat.',
+        steps: [
+          {
+            step_number: 1,
+            title: 'Acquire 3 Cultural Relics',
+            description: 'Purchase or dig up 3 race-specific relics (Vy\'keen Daggers, Korvax Casings, or Gek Relics).',
+            completed: false,
+          },
+          {
+            step_number: 2,
+            title: 'Present Offerings to Envoys',
+            description: 'Speak with 3 separate NPCs at trading posts or stations and gift the relics.',
+            completed: false,
+          },
+          {
+            step_number: 3,
+            title: 'Decipher 8 Knowledge Stones',
+            description: 'Interact with 8 Knowledge Stones on the planet surface to master native dialect words.',
+            completed: false,
+          },
+          {
+            step_number: 4,
+            title: 'Claim Guild Envoy Blessing',
+            description: 'Visit the Space Station Guild Envoy and claim free daily supplies unlocked by your rank.',
+            completed: false,
+          },
+        ],
+      },
+      {
+        path_id: 'gamma',
+        themeTitle: 'Path Gamma: Outlaw Corsair Alliance',
+        approach: 'Contraband smuggling, forged passports & pirate station allegiance',
+        description: 'Warp to an outlaw pirate system, smuggle banned commodities, and clear bounties with forged passports.',
+        tacticalAdvantage: 'Unlocks black-market X-Class modules and lucrative contraband trade routes.',
+        steps: [
+          {
+            step_number: 1,
+            title: 'Dock at Outlaw Space Station',
+            description: 'Find a system with the pirate skull icon and land at the Outlaw Station.',
+            completed: false,
+          },
+          {
+            step_number: 2,
+            title: 'Acquire Contraband Cargo',
+            description: 'Purchase NipNip Buds, GekNip, or Prismatic Feathers from the Salvage Dealer.',
+            completed: false,
+          },
+          {
+            step_number: 3,
+            title: 'Smuggle Past Sentinel Probes',
+            description: 'Warp to a high-economy regulated system and sell the contraband at a planetary trade post.',
+            completed: false,
+          },
+          {
+            step_number: 4,
+            title: 'Clear Bounty with Forged Passport',
+            description: 'Access the Space Station Core terminal and apply a Forged Passport to reset faction standings.',
+            completed: false,
+          },
+        ],
+      },
+    ];
+  } else {
+    // Default 3 Paths (Kinetic, Harmonic Hearth, Astral Cartography)
+    paths = [
+      {
+        path_id: 'alpha',
+        themeTitle: 'Path Alpha: Kinetic Reclamation',
+        approach: 'Direct assault, industrial demolition & high-yield scrap extraction',
+        description:
+          'Prioritize raw power, plasma torches, and heavy salvage. Cut into sealed airlocks, extract heavy freighter bulkheads, and recover high-grade starship tech.',
+        tacticalAdvantage:
+          'Maximizes Salvaged Frigate Modules, Storage Augmentations, and Tainted Metal yield.',
+        steps: [
+          {
+            step_number: 1,
+            title: 'Deploy Heavy Cutting Torches',
+            description: `Navigate to ${targetBiome} and blast open pressurized security seals or crashed starship cockpit canopies.`,
+            completed: false,
+          },
+          {
+            step_number: 2,
+            title: 'Extract Core Industrial Machinery',
+            description:
+              'Recover 3 high-value components: an Inverted Mirror, Freighter Hyperdrive Core, or Walker Brain.',
+            completed: false,
+          },
+          {
+            step_number: 3,
+            title: 'Dismantle Defense Grid / Sentinel Turrets',
+            description:
+              'Neutralize automated security drones, derelict security turrets, or territorial planetary sentinels.',
+            completed: false,
+          },
+          {
+            step_number: 4,
+            title: 'Claim Heavy Engineering Terminal',
+            description:
+              'Jack into the primary engineering mainframe to download blueprint schematics and extract tainted metal.',
+            completed: false,
+          },
+        ],
+      },
+      {
+        path_id: 'beta',
+        themeTitle: 'Path Beta: Harmonic Hearth',
+        approach: 'Ecological foraging, Nutrient Processing & hospitable outpost construction',
+        description:
+          'Emphasize harmony with the planet. Harvest wild grains, milk gentle herbivore fauna, prepare a signature multi-course meal in the Nutrient Processor, and build a scenic resting lounge.',
+        tacticalAdvantage:
+          'Earns massive praise and Nanite payouts from Iteration Cronus at the Space Anomaly + companion trust bonuses.',
+        steps: [
+          {
+            step_number: 1,
+            title: 'Forage Native Flora & Creature Provisions',
+            description: `Scout ${targetBiome} for wild Wheat, Star Bramble, or Sweetroot, and feed local wild fauna to harvest Creature Milk.`,
+            completed: false,
+          },
+          {
+            step_number: 2,
+            title: 'Construct Scenic Outpost / Dining Counter',
+            description:
+              'Erect a welcoming shelter featuring a serving counter, stools, and an indoor Nutrient Processor kitchen island.',
+            completed: false,
+          },
+          {
+            step_number: 3,
+            title: 'Cook a 2-Course Specialty Feast',
+            description:
+              'Use the Nutrient Processor to churn butter, mill flour, and bake Lumpen Doughnuts, Stellar Custard, or Abyssal Chowder.',
+            completed: false,
+          },
+          {
+            step_number: 4,
+            title: 'Deliver Feast to Iteration Cronus',
+            description:
+              'Board the Space Anomaly and present your freshly cooked specialty dish to Iteration Cronus for culinary critique.',
+            completed: false,
+          },
+        ],
+      },
+      {
+        path_id: 'gamma',
+        themeTitle: 'Path Gamma: Astral Cartography',
+        approach: 'Vantage point scouting, stealth telemetry & permanent waypoint beacons',
+        description:
+          'Operate as an explorer and cartographer. Scale the highest mountain peak or anchor an Exo-Skiff in open water, triangulate anomaly signals, and register a permanent galactic waypoint.',
+        tacticalAdvantage:
+          'Unlocks planetary portal glyph sequences, system trade route maps, and discovery milestone bonuses.',
+        steps: [
+          {
+            step_number: 1,
+            title: 'Ascend to Strategic Vantage Vista',
+            description: `Locate a dramatic cliff, floating island, or deep sea trench on ${targetBiome}.`,
+            completed: false,
+          },
+          {
+            step_number: 2,
+            title: 'Deploy Save Beacon & Triangulation Sensor',
+            description:
+              'Place a Save Beacon or Base Computer to claim the sector and triangulate anomalous radio frequencies.',
+            completed: false,
+          },
+          {
+            step_number: 3,
+            title: 'Scan 6 Undiscovered Biological Wonders',
+            description:
+              'Use the Analysis Visor to document native creatures, mineral formations, and ancient floral specimens.',
+            completed: false,
+          },
+          {
+            step_number: 4,
+            title: 'Transmit Coordinates via Planetary Portal',
+            description:
+              'Locate a Planetary Monolith or Portal structure and input your discovery coordinates into the galactic network.',
+            completed: false,
+          },
+        ],
+      },
+    ];
+  }
+  // Attach tailored photography sub-goals to each path
+  paths.forEach((p) => {
+    if (!p.photoGoal) {
+      p.photoGoal = generatePhotoGoal(selectedCategories, targetBiome, p.path_id);
+    }
+  });
+
+  const mainPhotoGoal = generatePhotoGoal(selectedCategories, targetBiome, "alpha");
 
   return {
     lore: {
@@ -1551,6 +2847,7 @@ export function buildLoreAndPaths(
       canonEntity: loreEntity,
     },
     paths,
+    photoGoal: mainPhotoGoal,
     hybridTitle,
     hybridQuote,
     categoryNames,
@@ -1590,6 +2887,7 @@ export function generateCasualMission(
     flavor_quote: isHybrid ? synthesis.hybridQuote : baseMission.flavor_quote,
     lore: synthesis.lore,
     paths: synthesis.paths,
+    photoGoal: synthesis.paths[0]?.photoGoal || synthesis.photoGoal,
     activePathId: 'alpha',
     steps: synthesis.paths[0].steps,
     createdAt: Date.now(),

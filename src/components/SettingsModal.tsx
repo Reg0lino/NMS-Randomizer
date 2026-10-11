@@ -9,10 +9,24 @@ import {
   ShieldCheck, 
   Check, 
   Trash2, 
-  ExternalLink 
+  ExternalLink,
+  Mic,
+  Play,
+  Square,
+  Sparkles,
+  Bot
 } from 'lucide-react';
 import { getUserApiKey, setUserApiKey } from '../services/directiveApi';
 import { playTerminalClick } from '../utils/audio';
+import { 
+  getTtsSettings, 
+  saveTtsSettings, 
+  getAvailableVoices, 
+  isTtsSupported, 
+  previewVoice, 
+  stopTts,
+  TtsSettings 
+} from '../utils/tts';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -35,12 +49,63 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
 }) => {
   const [apiKeyInput, setApiKeyInput] = useState('');
   const [keySaved, setKeySaved] = useState(false);
+  const [ttsSettings, setTtsSettings] = useState<TtsSettings>(() => getTtsSettings());
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+  const [isPreviewSpeaking, setIsPreviewSpeaking] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setApiKeyInput(getUserApiKey() || '');
+      setTtsSettings(getTtsSettings());
+
+      if (isTtsSupported()) {
+        const loadVoices = () => {
+          setVoices(getAvailableVoices());
+        };
+        loadVoices();
+        if (typeof window !== 'undefined' && window.speechSynthesis) {
+          window.speechSynthesis.onvoiceschanged = loadVoices;
+        }
+      }
+    } else {
+      stopTts();
+      setIsPreviewSpeaking(false);
     }
   }, [isOpen]);
+
+  const updateTts = (updates: Partial<TtsSettings>) => {
+    const updated = { ...ttsSettings, ...updates };
+    setTtsSettings(updated);
+    saveTtsSettings(updated);
+  };
+
+  const handleToggleTts = () => {
+    playTerminalClick();
+    const nextEnabled = !ttsSettings.enabled;
+    updateTts({ enabled: nextEnabled });
+    if (!nextEnabled) {
+      stopTts();
+      setIsPreviewSpeaking(false);
+    }
+  };
+
+  const handlePreviewVoice = () => {
+    playTerminalClick();
+    if (isPreviewSpeaking) {
+      stopTts();
+      setIsPreviewSpeaking(false);
+    } else {
+      setIsPreviewSpeaking(true);
+      previewVoice(
+        ttsSettings.voiceURI,
+        ttsSettings.persona,
+        ttsSettings.pitch,
+        ttsSettings.rate,
+        () => setIsPreviewSpeaking(true),
+        () => setIsPreviewSpeaking(false)
+      );
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -187,6 +252,149 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               {crtEnabled ? 'ACTIVE' : 'OFF'}
             </button>
           </div>
+        </div>
+
+        {/* Optional Mission Text-To-Speech (TTS) Voice Synthesizer */}
+        <div className="bg-[#050709] border border-[#1B2631] p-3 rounded-lg mb-3 flex flex-col gap-2.5">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-mono font-bold text-[#E6EDF3] uppercase tracking-wider flex items-center gap-1.5">
+              <Mic className="w-3.5 h-3.5 text-[#00F0FF]" />
+              MISSION TEXT-TO-SPEECH (TTS)
+            </span>
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#00E5A3]/15 text-[#00E5A3] font-bold">
+              100% FREE & OFFLINE
+            </span>
+          </div>
+
+          <p className="text-[11px] text-[#7D8B99] leading-relaxed">
+            Targeted voice narration for active mission directives. Strictly starts at the mission title and continues to the end of active objectives (never reads logs).
+          </p>
+
+          {/* Master TTS Toggle */}
+          <div className="flex items-center justify-between text-xs font-mono pt-1 border-t border-[#1B2631]/60">
+            <span className="text-[#7D8B99] flex items-center gap-1.5">
+              <Bot className="w-3.5 h-3.5 text-[#00E5A3]" />
+              Voice Synthesizer:
+            </span>
+            <button
+              onClick={handleToggleTts}
+              className={`px-2.5 py-1 rounded border text-[11px] font-bold transition-all active:scale-95 ${
+                ttsSettings.enabled
+                  ? 'bg-[#00E5A3]/20 border-[#00E5A3] text-[#00E5A3] shadow-[0_0_10px_rgba(0,229,163,0.3)]'
+                  : 'bg-[#0E141B] border-[#1B2631] text-[#7D8B99]'
+              }`}
+            >
+              {ttsSettings.enabled ? 'ENABLED' : 'DISABLED'}
+            </button>
+          </div>
+
+          {ttsSettings.enabled && (
+            <div className="flex flex-col gap-2.5 mt-1 pt-2 border-t border-[#1B2631]/60">
+              {/* Persona Presets */}
+              <div>
+                <label className="text-[10px] font-mono text-[#7D8B99] uppercase font-bold block mb-1">
+                  VOICE PERSONA ARCHETYPE:
+                </label>
+                <div className="grid grid-cols-2 gap-1.5 text-[11px] font-mono">
+                  {[
+                    { id: 'exosuit', label: 'Exosuit AI', desc: 'Standard Atlas suit tone' },
+                    { id: 'atlas', label: 'Atlas Core', desc: 'Deep synthetic resonance' },
+                    { id: 'korvax', label: 'Korvax Echo', desc: 'Harmonic machine pitch' },
+                    { id: 'vykeen', label: "Vy'keen Leader", desc: 'Low authoritative pace' },
+                  ].map((p) => {
+                    const isSelected = ttsSettings.persona === p.id;
+                    return (
+                      <button
+                        key={p.id}
+                        type="button"
+                        onClick={() => {
+                          playTerminalClick();
+                          updateTts({ persona: p.id as any });
+                        }}
+                        className={`p-1.5 rounded border text-left transition-colors ${
+                          isSelected
+                            ? 'bg-[#00F0FF]/15 border-[#00F0FF] text-[#00F0FF] font-bold'
+                            : 'bg-[#0E141B] border-[#1B2631] text-[#7D8B99] hover:text-[#E6EDF3]'
+                        }`}
+                      >
+                        <span className="block font-bold">{p.label}</span>
+                        <span className="text-[9px] text-[#7D8B99] block line-clamp-1">{p.desc}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* System Voice Selection Dropdown */}
+              {voices.length > 0 && (
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] font-mono text-[#7D8B99] uppercase font-bold">
+                    BROWSER / DEVICE SYSTEM VOICE:
+                  </label>
+                  <select
+                    value={ttsSettings.voiceURI}
+                    onChange={(e) => updateTts({ voiceURI: e.target.value })}
+                    className="bg-[#0E141B] border border-[#1B2631] text-xs text-[#E6EDF3] px-2.5 py-1.5 rounded font-mono focus:border-[#00F0FF] focus:outline-none"
+                  >
+                    <option value="">Default System Engine (Auto-Selected)</option>
+                    {voices.map((v) => (
+                      <option key={v.voiceURI} value={v.voiceURI}>
+                        {v.name} ({v.lang})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
+              {/* Voice Speed / Rate Control */}
+              <div className="flex items-center justify-between text-xs font-mono">
+                <span className="text-[11px] text-[#7D8B99]">Speech Speed:</span>
+                <div className="flex items-center gap-1.5">
+                  {[
+                    { rate: 0.85, label: '0.8x' },
+                    { rate: 1.0, label: '1.0x' },
+                    { rate: 1.15, label: '1.2x' },
+                  ].map((s) => (
+                    <button
+                      key={s.label}
+                      type="button"
+                      onClick={() => updateTts({ rate: s.rate })}
+                      className={`px-2 py-0.5 rounded text-[10px] border ${
+                        ttsSettings.rate === s.rate
+                          ? 'bg-[#00F0FF]/20 border-[#00F0FF] text-[#00F0FF] font-bold'
+                          : 'bg-[#0E141B] border-[#1B2631] text-[#7D8B99]'
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* On-Theme NMS Voice Preview Button */}
+              <button
+                type="button"
+                onClick={handlePreviewVoice}
+                className={`w-full py-2 px-3 rounded-lg border text-xs font-mono font-bold flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm ${
+                  isPreviewSpeaking
+                    ? 'bg-[#FF2A4D]/20 border-[#FF2A4D] text-[#FF2A4D] shadow-[0_0_12px_rgba(255,42,77,0.3)] animate-pulse'
+                    : 'bg-[#00F0FF]/15 hover:bg-[#00F0FF]/25 border-[#00F0FF]/50 text-[#00F0FF]'
+                }`}
+              >
+                {isPreviewSpeaking ? (
+                  <>
+                    <Square className="w-3.5 h-3.5 fill-current" />
+                    <span>STOP VOICE PREVIEW [ACTIVE]</span>
+                  </>
+                ) : (
+                  <>
+                    <Play className="w-3.5 h-3.5 fill-current" />
+                    <span>PREVIEW VOICE // "LIFE SUPPORT AT 100%"</span>
+                  </>
+                )}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* GitHub Pages Deployment Note */}

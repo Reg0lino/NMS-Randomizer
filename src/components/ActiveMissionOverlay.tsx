@@ -25,13 +25,21 @@ import {
   CornerDownRight,
   Eye,
   Crosshair,
-  Timer as TimerIcon
+  Timer as TimerIcon,
+  Volume2,
+  VolumeX,
+  Camera
 } from 'lucide-react';
 import {
   playAtlasPulse,
   playMilestoneComplete,
   playTerminalClick
 } from '../utils/audio';
+import {
+  speakMission,
+  stopTts,
+  getTtsSettings
+} from '../utils/tts';
 
 interface ActiveMissionOverlayProps {
   isOpen: boolean;
@@ -117,6 +125,49 @@ export const ActiveMissionOverlay: React.FC<ActiveMissionOverlayProps> = ({
       }
     };
   }, [isOpen, isTimerRunning]);
+
+  // TTS voice narration state
+  const [isSpeaking, setIsSpeaking] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      const tts = getTtsSettings();
+      if (tts.enabled) {
+        setIsSpeaking(true);
+        speakMission(
+          mission,
+          activePathId,
+          () => setIsSpeaking(true),
+          () => setIsSpeaking(false),
+          () => setIsSpeaking(false)
+        );
+      }
+    } else {
+      stopTts();
+      setIsSpeaking(false);
+    }
+
+    return () => {
+      stopTts();
+    };
+  }, [isOpen, mission.id, activePathId]);
+
+  const handleToggleTtsSpeech = () => {
+    playTerminalClick();
+    if (isSpeaking) {
+      stopTts();
+      setIsSpeaking(false);
+    } else {
+      setIsSpeaking(true);
+      speakMission(
+        mission,
+        activePathId,
+        () => setIsSpeaking(true),
+        () => setIsSpeaking(false),
+        () => setIsSpeaking(false)
+      );
+    }
+  };
 
   // Keyboard navigation
   useEffect(() => {
@@ -242,6 +293,18 @@ export const ActiveMissionOverlay: React.FC<ActiveMissionOverlayProps> = ({
           </div>
 
           <div className="flex items-center gap-1">
+            <button
+              onClick={handleToggleTtsSpeech}
+              className={`p-1 rounded transition-colors ${
+                isSpeaking
+                  ? 'text-[#FF2A4D] bg-[#FF2A4D]/20 animate-pulse'
+                  : 'text-[#7D8B99] hover:text-[#00F0FF] hover:bg-[#00F0FF]/10'
+              }`}
+              title={isSpeaking ? 'Stop TTS voice narration' : 'Listen to targeted mission briefing (TTS)'}
+            >
+              {isSpeaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+            </button>
+
             <button
               onClick={() => {
                 playTerminalClick();
@@ -443,6 +506,29 @@ export const ActiveMissionOverlay: React.FC<ActiveMissionOverlayProps> = ({
 
           {/* Window Actions */}
           <div className="flex items-center gap-2">
+            {/* TTS Narration Button */}
+            <button
+              onClick={handleToggleTtsSpeech}
+              className={`py-1.5 px-3 rounded-xl border font-mono text-xs flex items-center gap-1.5 transition-all active:scale-95 ${
+                isSpeaking
+                  ? 'bg-[#FF2A4D]/25 border-[#FF2A4D] text-[#FF2A4D] shadow-[0_0_12px_rgba(255,42,77,0.4)] animate-pulse'
+                  : 'bg-[#050709] border-[#1B2631] text-[#00F0FF] hover:border-[#00F0FF]/60 hover:bg-[#00F0FF]/10'
+              }`}
+              title={isSpeaking ? 'Halt active voice narration' : 'Listen to targeted mission briefing (TTS)'}
+            >
+              {isSpeaking ? (
+                <>
+                  <VolumeX className="w-3.5 h-3.5 text-[#FF2A4D]" />
+                  <span className="font-bold">STOP TTS</span>
+                </>
+              ) : (
+                <>
+                  <Volume2 className="w-3.5 h-3.5 text-[#00F0FF]" />
+                  <span className="font-bold">TTS VOICE</span>
+                </>
+              )}
+            </button>
+
             <button
               onClick={() => {
                 playTerminalClick();
@@ -468,6 +554,24 @@ export const ActiveMissionOverlay: React.FC<ActiveMissionOverlayProps> = ({
             </button>
           </div>
         </section>
+
+        {/* Active TTS Speaking Banner */}
+        {isSpeaking && (
+          <div className="bg-[#050709] border border-[#00F0FF] px-4 py-2.5 rounded-xl flex items-center justify-between gap-2 text-xs font-mono animate-in fade-in duration-200 shadow-[0_0_15px_rgba(0,240,255,0.2)]">
+            <div className="flex items-center gap-2">
+              <Volume2 className="w-4 h-4 text-[#00E5A3] animate-bounce" />
+              <span className="text-[#00F0FF] font-bold">
+                // EXOSUIT NARRATION ACTIVE: Transmitting Mission Telemetry
+              </span>
+            </div>
+            <button
+              onClick={handleToggleTtsSpeech}
+              className="px-2 py-0.5 rounded border border-[#FF2A4D]/60 bg-[#FF2A4D]/15 text-[#FF2A4D] text-[10px] font-bold hover:bg-[#FF2A4D]/25 transition-colors"
+            >
+              HALT AUDIO
+            </button>
+          </div>
+        )}
 
         {/* 1. Broad Mission Details Banner (Extra Large Headline & Key Telemetry) */}
         <section aria-label="Broad Mission Details" className="bg-[#0E141B]/90 border-2 border-[#1B2631] rounded-2xl p-5 sm:p-7 shadow-2xl relative overflow-hidden">
@@ -806,36 +910,41 @@ export const ActiveMissionOverlay: React.FC<ActiveMissionOverlayProps> = ({
           </div>
         )}
 
-        {/* 7. Restaurant / Outpost Spec Blueprint (If present) */}
-        {mission.restaurantSpec && (
-          <div className="bg-[#0E141B] border border-[#00F0FF]/30 rounded-xl p-5 flex flex-col gap-3">
-            <div className="flex items-center justify-between border-b border-[#1B2631] pb-2">
-              <div className="flex items-center gap-2">
-                <UtensilsCrossed className="w-4 h-4 text-[#00F0FF]" />
-                <span className="text-xs font-mono font-bold text-[#E6EDF3] uppercase tracking-wider">
-                  VENUE SPECIFICATION // {mission.restaurantSpec.venueType}
+        {/* 7. Photo Mode Reconnaissance & Sub-Goal */}
+        {(() => {
+          const activePath = mission.paths?.find((p) => p.path_id === activePathId) || mission.paths?.[0];
+          const pGoal = activePath?.photoGoal || mission.photoGoal;
+          if (!pGoal) return null;
+          return (
+            <div className="bg-[#0E141B] border border-[#00F0FF]/30 rounded-xl p-5 flex flex-col gap-3">
+              <div className="flex items-center justify-between border-b border-[#1B2631] pb-2 flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="p-1 rounded bg-[#00F0FF]/15 text-[#00F0FF]">
+                    <Camera className="w-4 h-4" />
+                  </div>
+                  <span className="text-xs font-mono font-bold text-[#E6EDF3] uppercase tracking-wider">
+                    PHOTO MODE RECON // {pGoal.title}
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#FFB300]/15 text-[#FFB300] border border-[#FFB300]/30 font-bold">
+                  +{pGoal.bonusNanites || 500} NANITES
                 </span>
               </div>
-            </div>
 
-            <p className="text-xs sm:text-sm text-[#7D8B99]">
-              <strong className="text-[#E6EDF3]">Aesthetic Theme:</strong>{' '}
-              {mission.restaurantSpec.aestheticTheme}
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-1">
-              {mission.restaurantSpec.signatureDishes.map((dish, i) => (
-                <div key={i} className="p-3 rounded-lg bg-[#050709] border border-[#1B2631]">
-                  <h4 className="text-xs font-bold text-[#00F0FF] mb-1">{dish.name}</h4>
-                  <p className="text-[11px] text-[#7D8B99] mb-1">
-                    Ingredients: {dish.ingredients.join(', ')}
-                  </p>
-                  <p className="text-[11px] text-[#E6EDF3] italic">{dish.processorSteps}</p>
-                </div>
-              ))}
+              <div className="flex flex-col gap-1.5 text-xs">
+                <p className="text-[#00F0FF] font-mono text-[11px]">
+                  TARGET SUBJECT: <span className="text-[#E6EDF3] bg-[#050709] px-2 py-0.5 rounded border border-[#1B2631]">{pGoal.targetSubject}</span>
+                </p>
+                <p className="text-xs sm:text-sm text-[#CBD5E1] bg-[#050709]/60 p-3 rounded-lg border border-[#1B2631] leading-relaxed">
+                  {pGoal.description}
+                </p>
+              </div>
+              <span className="text-[10px] font-mono text-[#7D8B99]">
+                Trigger via Quick Menu &gt; Utilities &gt; Photo Mode. Save or capture screenshot.
+              </span>
             </div>
-          </div>
-        )}
+          );
+        })()}
       </main>
 
       {/* Bottom Sticky Action Bar */}

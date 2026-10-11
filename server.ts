@@ -391,21 +391,27 @@ ${targetBiome ? `Target Biome / Setting: ${targetBiome}` : ''}
 ${customNotes ? `User Telemetry Note: ${customNotes}` : ''}
 
 CRITICAL RULES FOR RAPID GENERATION & TOKEN CONSERVATION:
-1. STRICT BREVITY: Keep title under 5 words. Narrative maximum 2 short sentences. Each step description maximum 1 crisp instruction.
-2. In-Game Lore Generation ('lore'):
+1. STRICT BREVITY & DEEP DIVERSITY: Keep title under 6 words. Narrative maximum 2 vivid sentences. Each step description maximum 1 crisp instruction.
+2. COSMOS & MODERN UPDATES INTEGRATION (Vast Variety):
+   Infuse rich gameplay mechanics from the Cosmos update and all recent eras (Orbital, Worlds, Aquarius, Echoes, Interceptor, Waypoint, Outlaws):
+   - Stellar orbital waypoints: Building sub-orbital / high-orbit observation platforms, star-monitoring waypoints, solar flare observation
+   - Minotaur mech purge: Purifying Vile Brood grubs and titan worm nests, harvesting vile flesh, heavy Minotaur cannon battles
+   - Exocraft vehicle-exclusive challenges: Roamer sentinel pursuits, Colossus heavy core mining, Nomad water traversing, Pilgrim drift racing
+   - Faction standing milestones: Elevating standing with Gek, Vy'keen, Korvax, or Outlaw/Mercenary Guilds (+3 to +5 standing requirement)
+   - Deep-space anomalies, custom starship fabrication at space stations, and harmonic autophage rites
+3. In-Game Lore Generation ('lore'):
    Generate authentic, canonical No Man's Sky lore tying into chosen styles.
    Include:
-   - origin (e.g. "Distress Beacon [Euclid]", "Autophage Memory Scrap #16")
+   - origin (e.g. "Stellar Core Telemetry [Euclid]", "Vy'keen High Command Order #44", "Autophage Scrap #16")
    - headline (short archive title)
-   - narrative (2 vivid, concise sentences of authentic lore)
+   - narrative (2 vivid, authentic sentences of lore)
    - historicalContext (short historical tag)
-   - canonEntity (e.g. "Iteration Cronus", "Priest Entity Nada")
-
-3. Three Distinct Thematic Paths ('paths'):
+   - canonEntity (e.g. "Iteration Cronus", "Priest Entity Nada", "Specialist Polo", "Ariadne")
+4. Three Distinct Thematic Paths ('paths'):
    Provide 3 distinct strategic paths:
-   - Path Alpha: Direct frontline recovery or salvage.
-   - Path Beta: Ecological synthesis, cooking, or taming.
-   - Path Gamma: Planetary cartography or beacon scouting.
+   - Path Alpha: Kinetic frontline / Exocraft assault / Direct demolition
+   - Path Beta: Ecological synthesis / Faction diplomacy / Culinary hearth
+   - Path Gamma: High-altitude stellar cartography / Orbital beacon / Silent infiltration
    Each path must provide:
    - path_id ('alpha', 'beta', 'gamma')
    - themeTitle (short title)
@@ -413,12 +419,24 @@ CRITICAL RULES FOR RAPID GENERATION & TOKEN CONSERVATION:
    - description (1 concise sentence)
    - tacticalAdvantage (1 short perk)
    - steps (3 direct, 1-sentence objectives with action verbs)
-
-4. Default 'steps': Set this to the 3 steps of Path Alpha.
-5. If 'culinary_restaurant' is among the styles: populate 'restaurantSpec' with venueType, aestheticTheme, 2 signatureDishes with real NMS recipes, optional fishingCatch, and decorChecklist (4 items).
-6. bonusGoal: An optional fun 1-sentence activity (e.g. photo mode, feeding Iteration Cronus).`;
-
-  const schema = {
+5. Default 'steps': Set this to the 3 steps of Path Alpha.
+6. PHOTOGRAPHY GOALS & SUB-GOALS ('photoGoal'):
+   Provide a specific Photo Mode composition goal for the mission and each path.
+   Examples:
+   - Planning high-altitude observatories: Capture panoramic star-rise framed with solar panels and horizon curve
+   - Unique biomes: Framing glowing bioluminescent flora / bubbles / anomalous glitch spires with your starship
+   - Space Anomaly / Atlas: Close-up composition of Nada's sanctuary or the Crimson Eye core
+   - Space dogfights / Pirates: Action snapshot of pirate engine vapor trails or exploding interceptors mid-burst
+   - Giant worms / underwater giants: Timing a shot of a Titan Worm erupting over a mountain crest or deep ocean leviathan
+   - End-of-mission milestones: Posing your Exocraft, companion mount, or custom starship at the completed outpost
+   Each photoGoal provides:
+   - title (e.g. "Panoramic Observatory Vista", "Atlas Monolith Alignment")
+   - targetSubject (e.g. "Space Anomaly Core", "Binary Stars & Solar Deck", "Titan Worm Eruption")
+   - description (1 concise sentence with Photo Mode camera framing guidance)
+   - bonusNanites (e.g. 500)
+7. bonusGoal: An optional fun 1-sentence activity (e.g. survival feat, stunt jump, or secondary challenge).
+`;
+const schema = {
     type: Type.OBJECT,
     properties: {
       protocol_id: { type: Type.STRING },
@@ -463,6 +481,16 @@ CRITICAL RULES FOR RAPID GENERATION & TOKEN CONSERVATION:
                 required: ['step_number', 'title', 'description'],
               },
             },
+            photoGoal: {
+              type: Type.OBJECT,
+              properties: {
+                title: { type: Type.STRING },
+                targetSubject: { type: Type.STRING },
+                description: { type: Type.STRING },
+                bonusNanites: { type: Type.INTEGER },
+              },
+              required: ['title', 'targetSubject', 'description'],
+            },
           },
           required: [
             'path_id',
@@ -473,6 +501,16 @@ CRITICAL RULES FOR RAPID GENERATION & TOKEN CONSERVATION:
             'steps',
           ],
         },
+      },
+      photoGoal: {
+        type: Type.OBJECT,
+        properties: {
+          title: { type: Type.STRING },
+          targetSubject: { type: Type.STRING },
+          description: { type: Type.STRING },
+          bonusNanites: { type: Type.INTEGER },
+        },
+        required: ['title', 'targetSubject', 'description'],
       },
       restaurantSpec: {
         type: Type.OBJECT,

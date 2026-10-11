@@ -41,9 +41,17 @@ import {
   Timer as TimerIcon,
   History,
   RotateCw,
-  FolderArchive
+  FolderArchive,
+  Volume2,
+  VolumeX,
+  Camera,
+  Radio,
+  Car,
+  Cross,
+  Award
 } from 'lucide-react';
 import { playAtlasPulse, playMilestoneComplete, playTerminalClick } from '../utils/audio';
+import { speakMission, stopTts, isTtsSpeaking } from '../utils/tts';
 import { ActiveMissionOverlay } from './ActiveMissionOverlay';
 
 interface CasualMissionsViewProps {
@@ -66,22 +74,49 @@ const CATEGORY_ICONS: Record<string, React.FC<{ className?: string }>> = {
   Rocket,
   Anchor,
   Compass,
+  Radio,
+  Car,
+  Crosshair,
+  Award,
 };
 
 const BIOME_SUGGESTIONS = [
   'Any Biome',
-  'Volcanic Ridge (Stone Bar)',
+  'Orbital Stellar Corridor (Star Orbit / Solar Crown)',
+  'Infested Titan Vile Nest Moon',
+  'Volcanic Ridge (Stone Bar / Exocraft Track)',
   'Deep Subterranean Cavern (Cave Diner)',
   'Deep Ocean Coral Trench (Glass Sushi Bistro)',
   'High-Altitude Sky Peak (Star-Gazer Patio)',
   'Capital Freighter Interior (Fleet Mess Hall)',
-  'Bioluminescent Paradise',
-  'Corrupted Dissonant World',
+  'Bioluminescent Paradise (Tamed Megafauna Reserve)',
+  'Corrupted Dissonant World (Autophage Encampment)',
   'Exotic Glitch / Anomaly Planet',
+  'Hostile Sentinel High-Security Planet',
   'Uncharted Red Star Moon',
 ];
 
 const HYBRID_PRESETS: { name: string; categories: MissionCategory[]; label: string }[] = [
+  {
+    name: 'Orbital Colossus',
+    categories: ['orbital_stellar', 'space_salvage'],
+    label: 'Solar Waypoint & Deep Space Salvage',
+  },
+  {
+    name: 'Mech Purifier',
+    categories: ['minotaur_purification', 'planet_salvage'],
+    label: 'Titan Worm Extermination & Scrap Extraction',
+  },
+  {
+    name: 'Nomad Racer',
+    categories: ['exocraft_combat', 'planet_expedition'],
+    label: 'Planetary Rally Track & Sentinel Combat',
+  },
+  {
+    name: 'Guild Master',
+    categories: ['faction_standing', 'culinary_restaurant'],
+    label: 'Race Standing Elevation & Diplomatic Tavern',
+  },
   {
     name: 'Ghost Galley',
     categories: ['culinary_restaurant', 'derelict_freighter'],
@@ -93,19 +128,14 @@ const HYBRID_PRESETS: { name: string; categories: MissionCategory[]; label: stri
     label: 'Deep Sea Skiff & Coral Trench Bistro',
   },
   {
+    name: 'Titan Vanguard',
+    categories: ['minotaur_purification', 'exocraft_combat'],
+    label: 'Combined Exocraft Strike & Infested Nest Purge',
+  },
+  {
     name: 'Scrap Titan',
     categories: ['planet_salvage', 'derelict_freighter'],
     label: 'Planetary Wrecks & Derelict Carrier',
-  },
-  {
-    name: 'Beast & Machine',
-    categories: ['xeno_companion', 'planet_salvage'],
-    label: 'Megafauna Steeds & Crashed Starships',
-  },
-  {
-    name: 'Frontier Rest-Stop',
-    categories: ['culinary_restaurant', 'planet_expedition'],
-    label: 'Paradise Peaks & Outdoor Lounge',
   },
 ];
 
@@ -152,14 +182,40 @@ export const CasualMissionsView: React.FC<CasualMissionsViewProps> = ({
   const [copied, setCopied] = useState(false);
   const [stepChecklist, setStepChecklist] = useState<Record<string, boolean>>({});
   const [decorChecklist, setDecorChecklist] = useState<Record<string, boolean>>({});
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   useEffect(() => {
+    // Stop speech whenever mission changes or unmounts
+    stopTts();
+    setIsSpeaking(false);
+
     if (currentMission?.activePathId) {
       setActivePathId(currentMission.activePathId);
     } else if (currentMission?.paths && currentMission.paths.length > 0) {
       setActivePathId(currentMission.paths[0].path_id);
     }
+
+    return () => {
+      stopTts();
+    };
   }, [currentMission?.id]);
+
+  const handleToggleTtsSpeech = () => {
+    playTerminalClick();
+    if (isSpeaking) {
+      stopTts();
+      setIsSpeaking(false);
+    } else if (currentMission) {
+      setIsSpeaking(true);
+      speakMission(
+        currentMission,
+        activePathId,
+        () => setIsSpeaking(true),
+        () => setIsSpeaking(false),
+        () => setIsSpeaking(false)
+      );
+    }
+  };
 
   const toggleCategorySelection = (catId: MissionCategory) => {
     playTerminalClick();
@@ -343,17 +399,15 @@ export const CasualMissionsView: React.FC<CasualMissionsViewProps> = ({
       });
     }
 
-    if (currentMission.restaurantSpec) {
-      const spec = currentMission.restaurantSpec;
-      text += `\n**VENUE BLUEPRINT: ${spec.venueType}**\n`;
-      text += `*Aesthetic Theme:* ${spec.aestheticTheme}\n`;
-      if (spec.fishingCatch) {
-        text += `*Fresh Catch Requirement:* ${spec.fishingCatch}\n`;
+    const activePath = currentMission.paths?.find((p) => p.path_id === activePathId) || currentMission.paths?.[0];
+    const pGoal = activePath?.photoGoal || currentMission.photoGoal;
+    if (pGoal) {
+      text += `\n📸 **PHOTO MODE RECON: ${pGoal.title}**\n`;
+      text += `*Target Subject:* ${pGoal.targetSubject}\n`;
+      text += `*Framing Guidance:* ${pGoal.description}\n`;
+      if (pGoal.bonusNanites) {
+        text += `*Bonus Telemetry:* +${pGoal.bonusNanites} Nanites\n`;
       }
-      text += `*Signature Dishes & Recipes:*\n`;
-      spec.signatureDishes.forEach((d) => {
-        text += `- **${d.name}** [${d.ingredients.join(', ')}]: ${d.processorSteps}\n`;
-      });
     }
 
     if (currentMission.bonusGoal) {
@@ -781,8 +835,21 @@ export const CasualMissionsView: React.FC<CasualMissionsViewProps> = ({
               </div>
             </div>
 
-            {/* Actions: Save & Share */}
+            {/* Actions: TTS Speech, Save & Share */}
             <div className="flex items-center gap-1.5">
+              <button
+                onClick={handleToggleTtsSpeech}
+                className={`p-2 rounded-lg border font-mono text-xs flex items-center gap-1.5 transition-all active:scale-95 ${
+                  isSpeaking
+                    ? 'bg-[#FF2A4D]/20 border-[#FF2A4D] text-[#FF2A4D] shadow-[0_0_12px_rgba(255,42,77,0.4)] animate-pulse'
+                    : 'bg-[#050709] border-[#1B2631] text-[#00F0FF] hover:border-[#00F0FF]/50 hover:bg-[#00F0FF]/10'
+                }`}
+                title={isSpeaking ? 'Stop voice narration' : 'Listen to targeted mission briefing (TTS)'}
+              >
+                {isSpeaking ? <VolumeX className="w-4 h-4 text-[#FF2A4D]" /> : <Volume2 className="w-4 h-4 text-[#00F0FF]" />}
+                <span className="hidden sm:inline font-bold">{isSpeaking ? 'STOP TTS' : 'LISTEN'}</span>
+              </button>
+
               <button
                 onClick={() => {
                   playTerminalClick();
@@ -807,6 +874,24 @@ export const CasualMissionsView: React.FC<CasualMissionsViewProps> = ({
               </button>
             </div>
           </div>
+
+          {/* Active TTS Speaking Banner */}
+          {isSpeaking && (
+            <div className="bg-[#050709] border border-[#00F0FF] p-2.5 rounded-xl flex items-center justify-between gap-2 text-xs font-mono animate-in fade-in duration-200">
+              <div className="flex items-center gap-2">
+                <Volume2 className="w-4 h-4 text-[#00E5A3] animate-bounce" />
+                <span className="text-[#00F0FF] font-bold">
+                  // EXOSUIT NARRATION ACTIVE: Reading Mission Directive
+                </span>
+              </div>
+              <button
+                onClick={handleToggleTtsSpeech}
+                className="px-2.5 py-1 rounded bg-[#FF2A4D]/20 border border-[#FF2A4D] text-[#FF2A4D] hover:bg-[#FF2A4D]/30 text-[10px] font-bold tracking-wider uppercase transition-colors"
+              >
+                STOP SPEECH
+              </button>
+            </div>
+          )}
 
           {/* START MISSION HERO CTA BANNER */}
           <div className="bg-gradient-to-r from-[#00F0FF]/15 via-[#0E141B] to-[#00E5A3]/15 border-2 border-[#00F0FF]/60 rounded-xl p-3 sm:p-4 flex items-center justify-between gap-3 flex-wrap shadow-[0_0_20px_rgba(0,240,255,0.15)]">
@@ -1038,109 +1123,54 @@ export const CasualMissionsView: React.FC<CasualMissionsViewProps> = ({
             </div>
           )}
 
-          {/* Special Section: Restaurant Blueprint & Culinary Menu if present (Placed at bottom of mission) */}
-          {currentMission.restaurantSpec && (
-            <div className="p-3.5 rounded-xl bg-[#050709] border border-[#FF7A00]/40 flex flex-col gap-3">
-              {/* Venue Title */}
-              <div className="flex items-center justify-between gap-2 border-b border-[#1B2631] pb-2">
-                <div className="flex items-center gap-2">
-                  <UtensilsCrossed className="w-4 h-4 text-[#FF7A00]" />
-                  <span className="text-xs font-mono font-bold text-[#E6EDF3] uppercase tracking-wider">
-                    VENUE BLUEPRINT: {currentMission.restaurantSpec.venueType}
-                  </span>
-                </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#FF7A00]/15 text-[#FF7A00] border border-[#FF7A00]/30 font-bold">
-                  CHEF NOTES & OUTPOST
-                </span>
-              </div>
-
-              {/* Aesthetic & Theme */}
-              <div className="text-xs text-[#7D8B99] leading-relaxed">
-                <span className="text-[#E6EDF3] font-bold font-mono mr-1">Architecture & Vibe:</span>
-                {currentMission.restaurantSpec.aestheticTheme}
-              </div>
-
-              {/* Fresh Catch Fishing Requirement if present */}
-              {currentMission.restaurantSpec.fishingCatch && (
-                <div className="p-2.5 rounded-lg bg-[#00F0FF]/10 border border-[#00F0FF]/30 flex items-start gap-2 text-xs">
-                  <Fish className="w-4 h-4 text-[#00F0FF] shrink-0 mt-0.5" />
-                  <div>
-                    <span className="text-[11px] font-mono text-[#00F0FF] font-bold block mb-0.5">
-                      AQUARIUS FRESH CATCH SPECIFICATION
+          {/* Specific Photography Objective Card (Integrated Photo Mode & Sub-Goal) */}
+          {(() => {
+            const activePath = currentMission.paths?.find((p) => p.path_id === activePathId) || currentMission.paths?.[0];
+            const pGoal = activePath?.photoGoal || currentMission.photoGoal;
+            if (!pGoal) return null;
+            return (
+              <div className="p-3.5 rounded-xl bg-gradient-to-r from-[#0E141B] to-[#121B24] border border-[#00F0FF]/35 shadow-lg flex flex-col gap-2.5 relative overflow-hidden">
+                <div className="flex items-center justify-between gap-2 border-b border-[#1B2631] pb-2 flex-wrap">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 rounded-lg bg-[#00F0FF]/15 border border-[#00F0FF]/30 text-[#00F0FF]">
+                      <Camera className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="text-[10px] font-mono font-bold text-[#00F0FF] uppercase tracking-wider block">
+                        PHOTO MODE SUB-GOAL // OPTICAL RECON
+                      </span>
+                      <h4 className="text-xs sm:text-sm font-bold text-[#E6EDF3]">
+                        {pGoal.title}
+                      </h4>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#FFB300]/15 text-[#FFB300] border border-[#FFB300]/30 font-bold flex items-center gap-1">
+                      <Star className="w-3 h-3" />
+                      +{pGoal.bonusNanites || 500} NANITES
                     </span>
-                    <p className="text-xs text-[#E6EDF3]">
-                      {currentMission.restaurantSpec.fishingCatch}
-                    </p>
                   </div>
                 </div>
-              )}
 
-              {/* Signature Dishes & Processor Steps */}
-              <div className="flex flex-col gap-2">
-                <span className="text-[11px] font-mono font-bold text-[#FFB300] uppercase tracking-wider flex items-center gap-1.5">
-                  <ChefHat className="w-3.5 h-3.5 text-[#FFB300]" />
-                  SIGNATURE MENU & NUTRIENT PROCESSOR RECIPES
-                </span>
+                <div className="flex flex-col gap-1.5 text-xs">
+                  <div className="flex items-center gap-2 font-mono text-[11px] text-[#7D8B99]">
+                    <span className="text-[#00F0FF] font-semibold">TARGET SUBJECT:</span>
+                    <span className="text-[#E6EDF3] bg-[#050709] px-2 py-0.5 rounded border border-[#1B2631]">
+                      {pGoal.targetSubject}
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#CBD5E1] leading-relaxed bg-[#050709]/60 p-2.5 rounded-lg border border-[#1B2631]">
+                    {pGoal.description}
+                  </p>
+                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  {currentMission.restaurantSpec.signatureDishes.map((dish, idx) => (
-                    <div key={idx} className="p-2.5 rounded-lg bg-[#0E141B] border border-[#1B2631]">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-bold text-[#E6EDF3]">{dish.name}</span>
-                        <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-[#FF7A00]/20 text-[#FF7A00]">
-                          DISH #{idx + 1}
-                        </span>
-                      </div>
-                      
-                      <div className="flex flex-wrap gap-1 my-1.5">
-                        {dish.ingredients.map((ing, iIdx) => (
-                          <span key={iIdx} className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#050709] border border-[#1B2631] text-[#00F0FF]">
-                            {ing}
-                          </span>
-                        ))}
-                      </div>
-
-                      <p className="text-[11px] text-[#7D8B99] leading-snug">
-                        <strong className="text-[#E6EDF3] font-normal">Method: </strong>{dish.processorSteps}
-                      </p>
-                    </div>
-                  ))}
+                <div className="text-[10px] font-mono text-[#7D8B99] flex items-center justify-between pt-1 border-t border-[#1B2631]/60 flex-wrap gap-1">
+                  <span>IN-GAME INSTRUCTION: Open Quick Menu &gt; Utilities &gt; Photo Mode</span>
+                  <span className="text-[#00E5A3]">Failsafe: Can be captured at any point during expedition</span>
                 </div>
               </div>
-
-              {/* Decor Checklist with clickable checkmarks */}
-              <div className="flex flex-col gap-1.5 pt-1 border-t border-[#1B2631]">
-                <span className="text-[11px] font-mono font-bold text-[#7D8B99] uppercase tracking-wider">
-                  DECOR & SEATING CHECKLIST (TAP TO VERIFY):
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
-                  {currentMission.restaurantSpec.decorChecklist.map((item, idx) => {
-                    const checkKey = `${currentMission.id}_decor_${idx}`;
-                    const isDone = !!decorChecklist[checkKey];
-                    return (
-                      <div
-                        key={idx}
-                        onClick={() => toggleDecorItem(checkKey)}
-                        className={`p-2 rounded-lg border text-[11px] flex items-center gap-2 cursor-pointer transition-colors select-none ${
-                          isDone
-                            ? 'bg-[#00E5A3]/10 border-[#00E5A3]/40 text-[#E6EDF3]'
-                            : 'bg-[#0E141B] border-[#1B2631] text-[#7D8B99] hover:text-[#E6EDF3]'
-                        }`}
-                      >
-                        {isDone ? (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-[#00E5A3] shrink-0" />
-                        ) : (
-                          <Circle className="w-3.5 h-3.5 text-[#7D8B99] shrink-0" />
-                        )}
-                        <span className={isDone ? 'line-through text-[#7D8B99]' : ''}>{item}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+            );
+          })()}        </div>
       ) : (
         <div className="bg-[#0E141B]/60 border border-dashed border-[#1B2631] rounded-xl p-8 text-center text-[#7D8B99]">
           <p className="text-xs font-mono uppercase tracking-wider mb-1">
@@ -1151,56 +1181,6 @@ export const CasualMissionsView: React.FC<CasualMissionsViewProps> = ({
           </p>
         </div>
       )}
-
-      {/* Expandable Chef's Nutrient & Fishing Cooking Guide (Moved to bottom of page) */}
-      <div className="bg-[#0E141B] border border-[#FF7A00]/30 rounded-xl overflow-hidden shadow-md">
-        <button
-          onClick={() => {
-            playTerminalClick();
-            setCookingGuideOpen(!cookingGuideOpen);
-          }}
-          className="w-full p-3 flex items-center justify-between text-left hover:bg-[#1B2631]/40 transition-colors"
-        >
-          <div className="flex items-center gap-2">
-            <UtensilsCrossed className="w-4 h-4 text-[#FF7A00]" />
-            <span className="text-xs font-mono font-bold text-[#E6EDF3] tracking-wide uppercase">
-              CHEF'S NUTRIENT PROCESSOR & FISHING QUICK-GUIDE
-            </span>
-          </div>
-          {cookingGuideOpen ? <ChevronUp className="w-4 h-4 text-[#7D8B99]" /> : <ChevronDown className="w-4 h-4 text-[#7D8B99]" />}
-        </button>
-
-        {cookingGuideOpen && (
-          <div className="p-3.5 border-t border-[#1B2631] flex flex-col gap-3 text-xs bg-[#050709]">
-            <p className="text-[11px] text-[#7D8B99] leading-relaxed">
-              The <strong>Nutrient Processor</strong> is built like a portable refiner. Drop raw ingredients into its slots to craft high-value baked goods, desserts, and savory fish dishes!
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-              <div className="p-2.5 rounded-lg bg-[#0E141B] border border-[#1B2631]">
-                <span className="font-bold text-[#FFB300] block mb-1">🧈 Churning Butter & Cream</span>
-                <p className="text-[11px] text-[#7D8B99] leading-relaxed">
-                  Feed wild herbivores: Milk → <strong>Cream</strong> → <strong>Churned Butter</strong> → add Sugar for <strong>Sweetened Butter</strong>!
-                </p>
-              </div>
-
-              <div className="p-2.5 rounded-lg bg-[#0E141B] border border-[#1B2631]">
-                <span className="font-bold text-[#38BDF8] block mb-1">🐟 Aquarius Fresh Catch</span>
-                <p className="text-[11px] text-[#7D8B99] leading-relaxed">
-                  Fish caught with your <strong>Fishing Rig</strong> can be dropped straight into the Processor to produce <strong>Raw Fish Fillets</strong> for chowders!
-                </p>
-              </div>
-
-              <div className="p-2.5 rounded-lg bg-[#0E141B] border border-[#1B2631]">
-                <span className="font-bold text-[#00E5A3] block mb-1">💰 Free Nanites from Cronus</span>
-                <p className="text-[11px] text-[#7D8B99] leading-relaxed">
-                  Deliver cooked delicacies to <strong>Iteration Cronus</strong> on the Space Anomaly to earn hundreds of Nanites for each tasting!
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
 
       {/* Active Mission HUD Overlay with Large Tiles, Focus Inspect, and Live Chronometer */}
       {currentMission && (
