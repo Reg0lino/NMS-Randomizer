@@ -372,7 +372,7 @@ export const ActiveMissionOverlay: React.FC<ActiveMissionOverlayProps> = ({
       <div className="pointer-events-none fixed bottom-0 right-0 w-32 h-32 border-b-2 border-r-2 border-[#00F0FF]/40" />
 
       {/* Top Informative Header (Non-interactive buffer zone for broken top screens - safe margin 165px+) */}
-      <header className="relative z-10 border-b-2 border-[#1B2631] bg-[#050709] px-4 sm:px-6 pt-10 sm:pt-12 pb-5 select-none shrink-0 pointer-events-none min-h-[165px] sm:min-h-[185px] flex flex-col justify-center">
+      <header className="relative z-10 border-b-2 border-[#1B2631] bg-[#050709] px-3 sm:px-6 pt-6 sm:pt-10 pb-4 select-none shrink-0 pointer-events-none min-h-[135px] sm:min-h-[165px] flex flex-col justify-center">
         <div className="max-w-6xl w-full mx-auto flex flex-col gap-2">
           {/* Top diagnostic line */}
           <div className="flex items-center justify-between text-[10px] font-mono text-[#7D8B99] border-b border-[#1B2631]/60 pb-1.5">

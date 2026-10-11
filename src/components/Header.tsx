@@ -3,7 +3,7 @@ import { Activity, Radio, Cpu, Shield } from 'lucide-react';
 
 export const Header: React.FC = () => {
   return (
-    <header className="w-full bg-[#050709] border-b-2 border-[#1B2631] px-4 pt-10 sm:pt-12 pb-5 sm:pb-6 select-none shrink-0 pointer-events-none min-h-[160px] sm:min-h-[175px] flex flex-col justify-center">
+    <header className="w-full bg-[#050709] border-b-2 border-[#1B2631] px-3 sm:px-4 pt-6 sm:pt-10 pb-4 sm:pb-5 select-none shrink-0 pointer-events-none min-h-[135px] sm:min-h-[165px] flex flex-col justify-center">
       <div className="flex flex-col gap-2.5 max-w-4xl mx-auto w-full">
         {/* Upper Informative Telemetry Ribbon (Safely covers the broken top 20% zone) */}
         <div className="flex items-center justify-between text-[10px] font-mono text-[#7D8B99] border-b border-[#1B2631]/60 pb-1.5">

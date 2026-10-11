@@ -389,8 +389,8 @@ export default function App() {
       <div
         className={`w-full flex flex-col bg-[#050709] transition-all duration-300 relative ${
           s10Frame
-            ? 'max-w-[390px] h-[820px] max-h-[92vh] my-auto rounded-[36px] border-[8px] border-[#1B2631] shadow-[0_0_50px_rgba(0,240,255,0.25)] overflow-hidden'
-            : 'max-w-2xl min-h-screen min-h-[100dvh] border-x border-[#1B2631]/60 shadow-2xl'
+            ? 'sm:max-w-[420px] sm:h-[860px] sm:max-h-[94vh] sm:my-auto sm:rounded-[36px] sm:border-[8px] sm:border-[#1B2631] sm:shadow-[0_0_50px_rgba(0,240,255,0.25)] sm:overflow-hidden max-w-full min-h-screen min-h-[100dvh]'
+            : 'max-w-3xl min-h-screen min-h-[100dvh] sm:border-x border-[#1B2631]/60 shadow-2xl'
         }`}
       >
         {/* Top Header: Pure non-interactive title banner (Safe for broken top-15% digitizers) */}
@@ -398,8 +398,8 @@ export default function App() {
 
         {/* Core Scrollable Body */}
         <main
-          className={`flex-1 w-full px-3 pt-3 pb-24 ${
-            s10Frame ? 'overflow-y-auto min-h-0 overscroll-contain' : ''
+          className={`flex-1 w-full px-3 sm:px-5 pt-3 pb-24 ${
+            s10Frame ? 'sm:overflow-y-auto sm:min-h-0 sm:overscroll-contain' : ''
           }`}
         >
           {/* Scrollable Control Matrix (Buttons safely placed beneath top digitizer dead zone) */}
