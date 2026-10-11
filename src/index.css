@@ -100,22 +100,16 @@
   background: #FF2A4D;
 }
 
-
-/* Global Mobile Readability & Full-Bleed Scaling */
+/* Mobile legibility and high-DPI scaling safeguards */
 html {
-  font-size: 16px;
+  font-size: 15px;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
 
-@media (max-width: 639px) {
+@media (min-width: 640px) {
   html {
     font-size: 16px;
-  }
-  
-  /* Ensure all interactive elements have generous finger-tap padding */
-  button, select, input {
-    font-size: 0.925rem;
   }
 }
 

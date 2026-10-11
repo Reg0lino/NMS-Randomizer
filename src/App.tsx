@@ -59,7 +59,7 @@ export default function App() {
   const [s10Frame, setS10Frame] = useState<boolean>(() => {
     try {
       const saved = localStorage.getItem('atlas_s10_frame');
-      return false;
+      return saved === 'true';
     } catch {
       return false;
     }
